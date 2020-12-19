@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <random>
 
 #include "coreclrhost.h"
 // #include "coreclr_ctl.h"
@@ -19,22 +20,38 @@
 #define MAX_PATH PATH_MAX
 #define CORECLR_FILE_NAME "libcoreclr.so"
 
-typedef int (*report_callback_ptr)(int progress);
-typedef double (*return_docuble_method_ptr)(const double d);
+
+typedef double (*double_return_docuble_method_ptr)(const double d);
+typedef long (*int64_int64_return_int64_method_ptr)(const long i, const long j);
+typedef char* (*string_return_string_method_ptr)(const char* str);
+
+double_return_docuble_method_ptr managedDelegateReturnDouble{nullptr};
+int64_int64_return_int64_method_ptr managedDelegateInvokeReturnInt64{nullptr};
+string_return_string_method_ptr managedDelegateInvokeReturnString{nullptr};
+
 
 void BuildTpaList(const char* directory, const char* extension, std::string& tpaList);
 int ReportProgressCallback(int progress);
 
 // for property variables
-void *coreClr = NULL;
-coreclr_initialize_ptr initializeCoreClr = NULL;
-coreclr_create_delegate_ptr createManagedDelegate = NULL;
-coreclr_shutdown_ptr shutdownCoreClr = NULL;
+// for LoadClr
+void *coreClr = nullptr;
+coreclr_initialize_ptr initializeCoreClr = nullptr;
+coreclr_create_delegate_ptr createManagedDelegate = nullptr;
+coreclr_shutdown_ptr shutdownCoreClr = nullptr;
 char runtimePath[MAX_PATH];
+std::string tpaList{};
 
-int InitClr(const char* argPath);
+// for InitClr
+void* hostHandle;
+unsigned int domainId;
 
-int InitClr(const char* argPath){
+const char* propertyKeys[] = { "TRUSTED_PLATFORM_ASSEMBLIES" };
+
+
+
+int LoadClr(const char* argPath);
+int LoadClr(const char* argPath){
 
     realpath(argPath, runtimePath);
     printf("runtimePath: %s\n", runtimePath);
@@ -88,41 +105,24 @@ int InitClr(const char* argPath){
         printf("coreclr_shutdown not found");
         return -1;
     }
+
+
+
+    BuildTpaList(runtimePath, ".dll", tpaList);
+
+    // propertyValues = tpaList.c_str()};
+
     return 1;
 }
 
 
-int main(int argc, char* argv[])
-{
-    if(argc < 2){
-        printf("need 1 runtime path argument\n");
-        return 255;
-    }
-    InitClr(argv[1]);
-
-
-
-    std::string tpaList;
-    BuildTpaList(runtimePath, ".dll", tpaList);
-
-
-    const char* propertyKeys[] = {
-        "TRUSTED_PLATFORM_ASSEMBLIES"      // Trusted assemblies
-    };
-
-    const char* propertyValues[] = {
-        tpaList.c_str()
-    };
-
-
-
-    // ========== coreclr start ==========
-
-    void* hostHandle;
-    unsigned int domainId;
-
-    // This function both starts the .NET Core runtime and creates
-    // the default (and only) AppDomain
+/**
+ * Initialize CoreClr 
+ */
+int InitClr();
+int InitClr(){
+    const char *propertyValues[] = {tpaList.c_str()};
+    // @TODO load signature from ini
     int hr = initializeCoreClr(
                     runtimePath,        // App base path
                     "SampleHost",       // AppDomain friendly name
@@ -132,46 +132,146 @@ int main(int argc, char* argv[])
                     &hostHandle,        // Host handle
                     &domainId);         // AppDomain ID
 
-    if (hr >= 0)
-    {
-        printf("CoreCLR started\n");
-    }
-    else
-    {
+    if(hr < 0){
         printf("coreclr_initialize failed - status: 0x%08x\n", hr);
         return -1;
     }
 
+    printf("CoreCLR started\n");
+    return hr;
+}
 
-    // ========== invoke managed code ==========
-    return_docuble_method_ptr managedDelegate;  
-    // todo load signature from ini
+
+double InvokeReturnDouble(int &hr, double d);
+// public static double ReturnDouble(double d)
+double InvokeReturnDouble(int &hr, double d){
+    if(managedDelegateReturnDouble != nullptr){
+        hr = 1;
+        printf("Managed delegate already created. Reuse it.\n");
+        return managedDelegateReturnDouble(d);
+    }
     hr = createManagedDelegate(
             hostHandle,
             domainId,
             "invokee_test, Version=1.0.0.0",
             "invokee_test.InvokeeTest",
             "ReturnDouble",
-            (void**)&managedDelegate);
-    // </Snippet5>
-
-    if (hr >= 0)
-    {
-        printf("Managed delegate created\n");
-    }
-    else
-    {
+            (void**)&managedDelegateReturnDouble);
+    if (hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
-        return -1;
+        return 0.0f;        
+    }
+
+    printf("Managed delegate created\n");
+    return managedDelegateReturnDouble(d);
+}
+
+void InvokeReturnString(int &hr, const std::string str, std::string &ret, int retLen);
+// public static string ReturnString(string str)
+void InvokeReturnString(int &hr, const std::string str, std::string &ret, int retLen){
+    if(managedDelegateInvokeReturnString != nullptr){
+        hr = 1;
+        printf("Managed delegate already created. Reuse it.\n");
+        ret = managedDelegateInvokeReturnString(str.c_str());
+        printf("ret %s\n", ret.c_str());
+        return ;
+    }
+    hr = createManagedDelegate(
+            hostHandle,
+            domainId,
+            "invokee_test, Version=1.0.0.0",
+            "invokee_test.InvokeeTest",
+            "ReturnString",
+            (void**)&managedDelegateInvokeReturnString);
+    if (hr < 0){
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
+        return ;        
+    }
+
+    printf("Managed delegate created\n");
+    ret = managedDelegateInvokeReturnString(str.c_str());
+    printf("retStr %s\n", ret.c_str());
+    return ;
+}
+
+
+long InvokeReturnInt64(int &hr, long i, long j);
+// public static string ReturnString(string str)
+long InvokeReturnInt64(int &hr, long i, long j){
+    if(managedDelegateInvokeReturnInt64 != nullptr){
+        hr = 1;
+        printf("Managed delegate already created. Reuse it.\n");
+        return managedDelegateInvokeReturnInt64(i, j);
+    }
+    hr = createManagedDelegate(
+            hostHandle,
+            domainId,
+            "invokee_test, Version=1.0.0.0",
+            "invokee_test.InvokeeTest",
+            "ReturnInt64",
+            (void**)&managedDelegateInvokeReturnInt64);
+    if (hr < 0){
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
+        return 0.0f;        
+    }
+
+    printf("Managed delegate created\n");
+    return managedDelegateInvokeReturnInt64(i, j);
+}
+
+
+int main(int argc, char* argv[])
+{
+    if(argc < 2){
+        printf("need 1 runtime path argument\n");
+        return 255;
+    }
+    int LoadResult = LoadClr(argv[1]);
+    if(LoadResult != 1){
+        printf("LoadClr failed\n");
+        return 255;
     }
 
 
-    double csArg = 5;
-    double ret = managedDelegate(csArg);
-    printf("input: %lf , Managed code returned: %lf\n",csArg, ret);
+    // ========== coreclr start ==========
+   
+    int hr = InitClr();
+    if(hr < 0){
+        printf("initResult failed\n");
+        return 255;
+    }
+
+    // ========== invoke managed code ==========
+    std::random_device seed_gen;
+    std::mt19937 engine(seed_gen());
+    std::uniform_real_distribution<> dist(0.0, 40.0);
+    double csArg = dist(engine);
+    double ret = InvokeReturnDouble(hr, csArg);
+    printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
+
+    csArg = dist(engine);
+    ret = InvokeReturnDouble(hr, csArg);
+    printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
 
 
+    std::uniform_int_distribution<> distInt(-40, 40);
+    long n = distInt(engine);
+    long m = distInt(engine);
+    long retInt64 = InvokeReturnInt64(hr, n, m);
+    printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
 
+    n = distInt(engine);
+    m = distInt(engine);
+    retInt64 = InvokeReturnInt64(hr, n, m);
+    printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
+
+    n = distInt(engine);
+
+    std::string inputStr{"abcdefghijklmnopqrstuvwxyz1234567890"};
+    int strLen = inputStr.length();
+    std::string retString{};
+    InvokeReturnString(hr, inputStr, retString, strLen);
+    printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString.c_str(), hr);
 
     // ========== Destruct VM ==============
     hr = shutdownCoreClr(hostHandle, domainId);

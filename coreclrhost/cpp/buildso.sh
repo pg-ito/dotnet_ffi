@@ -13,3 +13,7 @@ fi
 g++ ${GCC_OPT} -fPIC -o ${OUTPUT_NAME} coreclr_ctlpp.cpp -ldl
 
 echo "debug app compiled. usage: ./${OUTPUT_NAME}  ../../dotnet_dll/invokee_test/dotnet_dll/libcoreclr.so"
+
+if [ "${1}" == "debug" ];then
+  ./${OUTPUT_NAME}  ../../dotnet_dll/invokee_test/dotnet_dll/libcoreclr.so
+fi
