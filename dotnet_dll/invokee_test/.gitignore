@@ -1,0 +1,4 @@
+bin
+dotnet_dll
+obj
+invokee_test.csproj.user

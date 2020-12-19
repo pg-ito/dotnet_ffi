@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("dotnet_ffi", "for dotnet_ffi support", "no");
+
+// Otherwise, use ARG_ENABLE
+ARG_ENABLE("dotnet_ffi", "enable dotnet_ffi support", "no");
+
+if (PHP_DOTNET_FFI != "no") {
+	EXTENSION("dotnet_ffi", "dotnet_ffi.c", PHP_EXTNAME_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+}
+
