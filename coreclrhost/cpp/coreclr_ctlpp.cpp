@@ -25,16 +25,18 @@ typedef double (*return_docuble_method_ptr)(const double d);
 void BuildTpaList(const char* directory, const char* extension, std::string& tpaList);
 int ReportProgressCallback(int progress);
 
+// for property variables
+void *coreClr = NULL;
+coreclr_initialize_ptr initializeCoreClr = NULL;
+coreclr_create_delegate_ptr createManagedDelegate = NULL;
+coreclr_shutdown_ptr shutdownCoreClr = NULL;
+char runtimePath[MAX_PATH];
 
+int InitClr(const char* argPath);
 
-int main(int argc, char* argv[])
-{
-    if(argc < 2){
-        printf("need 1 runtime path argument\n");
-        return 255;
-    }
-    char runtimePath[MAX_PATH];
-    realpath(argv[1], runtimePath);
+int InitClr(const char* argPath){
+
+    realpath(argPath, runtimePath);
     printf("runtimePath: %s\n", runtimePath);
     char *last_slash = strrchr(runtimePath, FS_SEPARATOR[0]);
     if (last_slash != NULL){
@@ -54,7 +56,7 @@ int main(int argc, char* argv[])
     managedLibraryPath.append(FS_SEPARATOR);
     managedLibraryPath.append(MANAGED_ASSEMBLY);
 
-    void *coreClr = dlopen(coreClrPath.c_str(), RTLD_NOW | RTLD_LOCAL);
+    coreClr = dlopen(coreClrPath.c_str(), RTLD_NOW | RTLD_LOCAL);
     if (coreClr == NULL)
     {
         printf("ERROR: Failed to load CoreCLR from %s\n", coreClrPath.c_str());
@@ -65,9 +67,9 @@ int main(int argc, char* argv[])
         printf("Loaded CoreCLR from %s\n", coreClrPath.c_str());
     }
 
-    coreclr_initialize_ptr initializeCoreClr = (coreclr_initialize_ptr)dlsym(coreClr, "coreclr_initialize");
-    coreclr_create_delegate_ptr createManagedDelegate = (coreclr_create_delegate_ptr)dlsym(coreClr, "coreclr_create_delegate");
-    coreclr_shutdown_ptr shutdownCoreClr = (coreclr_shutdown_ptr)dlsym(coreClr, "coreclr_shutdown");
+    initializeCoreClr = (coreclr_initialize_ptr)dlsym(coreClr, "coreclr_initialize");
+    createManagedDelegate = (coreclr_create_delegate_ptr)dlsym(coreClr, "coreclr_create_delegate");
+    shutdownCoreClr = (coreclr_shutdown_ptr)dlsym(coreClr, "coreclr_shutdown");
 
     if (initializeCoreClr == NULL)
     {
@@ -86,6 +88,17 @@ int main(int argc, char* argv[])
         printf("coreclr_shutdown not found");
         return -1;
     }
+    return 1;
+}
+
+
+int main(int argc, char* argv[])
+{
+    if(argc < 2){
+        printf("need 1 runtime path argument\n");
+        return 255;
+    }
+    InitClr(argv[1]);
 
 
 
