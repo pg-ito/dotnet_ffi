@@ -219,6 +219,17 @@ long InvokeReturnInt64(int &hr, long i, long j){
     return managedDelegateInvokeReturnInt64(i, j);
 }
 
+// ========== Destruct VM ==============
+void DestructVm(int &hr);
+void DestructVm(int &hr){
+    hr = shutdownCoreClr(hostHandle, domainId);
+
+    if (hr < 0){
+        printf("coreclr_shutdown failed - status: 0x%08x\n", hr);
+        return ;
+    }
+    printf("CoreCLR successfully shutdown status: 0x%08x\n", hr);
+}
 
 int main(int argc, char* argv[])
 {
@@ -273,18 +284,8 @@ int main(int argc, char* argv[])
     InvokeReturnString(hr, inputStr, retString, strLen);
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString.c_str(), hr);
 
-    // ========== Destruct VM ==============
-    hr = shutdownCoreClr(hostHandle, domainId);
-
-    if (hr >= 0)
-    {
-        printf("CoreCLR successfully shutdown\n");
-    }
-    else
-    {
-        printf("coreclr_shutdown failed - status: 0x%08x\n", hr);
-    }
-
+    DestructVm(hr);
+    printf("shutdown with hr: %d\n", hr);
     return 0;
 }
 
