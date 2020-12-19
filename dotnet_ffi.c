@@ -27,7 +27,7 @@
 #include "ext/standard/info.h"
 #include "php_dotnet_ffi.h"
 
-#include "coreclr_ctl.h"
+#include "coreclrhost/coreclr_ctlpp.h"
 
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
@@ -65,7 +65,7 @@ PHP_FUNCTION(confirm_dotnet_ffi_compiled)
 	}
 
 	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
-
+	LoadClr("/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so");
 	RETURN_STR(strg);
 }
 PHP_FUNCTION(dotnet_ffi_arg_string_ret_string)
