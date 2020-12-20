@@ -165,7 +165,7 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
-
+    *hr = 1;
     printf("Managed delegate created\n");
     return managedDelegateReturnDouble(d);
 }
@@ -195,6 +195,7 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
     *retStr = (char *)malloc((size_t)*retLen);
     strcpy(*retStr, ret.c_str());
     printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
+    *hr = 1;
     return ;
 }
 
@@ -218,7 +219,7 @@ extern "C" long InvokeReturnInt64(int *hr, long i, long j){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
-
+    *hr = 1;
     printf("Managed delegate created\n");
     return managedDelegateInvokeReturnInt64(i, j);
 }
@@ -283,7 +284,7 @@ int main(int argc, char* argv[])
 
     n = distInt(engine);
 
-    std::string inputStr{"abcdefghijklmnopqrstuvwxyz1234567890"};
+    std::string inputStr{"1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ."};
     int strLen = inputStr.length();
     char *retString = nullptr;
     int retLen = 0;
@@ -291,6 +292,13 @@ int main(int argc, char* argv[])
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);
 
+    std::string inputStr1{"1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ."};
+    int strLen1 = inputStr1.length();
+    char *retString1 = nullptr;
+    int retLen1 = 0;
+    InvokeReturnString(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1);
+    printf("input: %s Managed code returned: %s, hr: %d\n", inputStr1.c_str(), retString1, hr);
+    free(retString1);
 
     std::string inputStr2{"hello world"};
     int strLen2 = inputStr2.length();

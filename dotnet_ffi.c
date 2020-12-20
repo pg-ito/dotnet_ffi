@@ -30,9 +30,9 @@
 // #include "coreclrhost/coreclr_ctlpp.h"
 #include "lib/coreclr_ctlpp.h"
 
-
+// @TODO fix error log macro. may be crash.
 #define DOTNET_FFI_ERRLOG( fmt, args... ) \
-  fprintf(stderr, "DOTNET_FFI_ERR %s File:%s:%d Func:%s Log:%s\n"fmt, __FILE__, __LINE__, __func__, args )
+  fprintf(stderr, "DOTNET_FFI_ERR File:%s:%d Func:%s Log:%s\n"fmt, __FILE__, __LINE__, __func__, args )
 
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
@@ -100,6 +100,7 @@ PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 	}
 	int hr=-1;
 	zend_long result = InvokeReturnInt64(&hr, arg1, arg2);
+	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d",hr);
 		return;
@@ -117,15 +118,17 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 		return;
 	}
 	int hr=-1;
-	char *retString = NULL;
+	char *retString = emalloc(0);
 	int strLen = 0;
 	InvokeReturnString(&hr, arg, arg_len, &retString, &strLen);
+	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d",hr);
 		return;
 	}
+	
 	zend_string *result = strpprintf(0, "%s", retString);
-
+	//zend_string *result = strpprintf(0, "stringtest");
 	RETURN_STR(result);
 	efree(retString);
 }
