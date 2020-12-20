@@ -188,12 +188,9 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
 
     printf("Managed delegate created\n");
     std::string ret = managedDelegateInvokeReturnString(inStr);
-    printf("nativecoderet %s\n", ret.c_str());
     *retLen = ret.length()+1;
-    
-    char *tmp = (char *)malloc((size_t)*retLen);
-    memcpy(tmp, ret.c_str(), (size_t)*retLen);
-    *retStr = tmp;
+    *retStr = (char *)malloc((size_t)*retLen);
+    memcpy(*retStr, ret.c_str(), (size_t)*retLen);
     printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
     return ;
 }
@@ -214,7 +211,7 @@ extern "C" long InvokeReturnInt64(int *hr, long i, long j){
             "invokee_test.InvokeeTest",
             "ReturnInt64",
             (void**)&managedDelegateInvokeReturnInt64);
-    if (hr < 0){
+    if (*hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
