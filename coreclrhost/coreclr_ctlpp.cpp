@@ -54,6 +54,9 @@ const char* propertyKeys[] = { "TRUSTED_PLATFORM_ASSEMBLIES" };
 
 extern "C" int LoadClr(const char* argPath){
 
+    if(initializeCoreClr != NULL && createManagedDelegate != NULL && shutdownCoreClr != NULL){
+
+    }
     realpath(argPath, runtimePath);
     printf("runtimePath: %s\n", runtimePath);
     char *last_slash = strrchr(runtimePath, FS_SEPARATOR[0]);
@@ -126,7 +129,7 @@ extern "C" int InitClr(){
     // @TODO load signature from ini
     int hr = initializeCoreClr(
                     runtimePath,        // App base path
-                    "SampleHost",       // AppDomain friendly name
+                    "HostingOnPHP",       // AppDomain friendly name
                     sizeof(propertyKeys) / sizeof(char*),   // Property count
                     propertyKeys,       // Property names
                     propertyValues,     // Property values
@@ -222,14 +225,15 @@ extern "C" long InvokeReturnInt64(int *hr, long i, long j){
 
 // ========== Destruct VM ==============
 
-extern "C" void DestructVm(int *hr){
-    *hr = shutdownCoreClr(hostHandle, domainId);
+extern "C" int DestructVm(){
+    int hr = shutdownCoreClr(hostHandle, domainId);
 
-    if (*hr < 0){
-        printf("coreclr_shutdown failed - status: 0x%08x\n", *hr);
-        return ;
+    if (hr < 0){
+        printf("coreclr_shutdown failed - status: 0x%08x\n", hr);
+        return hr;
     }
-    printf("CoreCLR successfully shutdown status: 0x%08x\n", *hr);
+    printf("CoreCLR successfully shutdown status: 0x%08x\n", hr);
+    return hr;
 }
 
 int main(int argc, char* argv[])
@@ -287,7 +291,7 @@ int main(int argc, char* argv[])
     
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);
-    DestructVm(&hr);
+    hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);
     return 0;
 }

@@ -13,7 +13,13 @@ int InitClr();
 double InvokeReturnDouble(int *hr, double d);
 void InvokeReturnString(int *hr, const char *inStr, int inLen, char **retStr, int *retLen);
 long InvokeReturnInt64(int *hr, long i, long j);
-void DestructVm(int *hr);
+int DestructVm();
+
+#ifdef DOTNET_FFI_LOG_ENBALE
+#define DBGLOG( debuglog ) printf( "File:%s Line:%d Func:%s Log:%s\n", __FILE__, __LINE__, __func__, debuglog )
+#else
+#define DBGLOG( debuglog )
+#endif
 
 #ifdef __cplusplus 
 } //end extern "C" 

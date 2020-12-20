@@ -28,7 +28,12 @@
 #include "php_dotnet_ffi.h"
 
 // #include "coreclrhost/coreclr_ctlpp.h"
-#include "coreclr_ctl.h"
+#include "lib/coreclr_ctlpp.h"
+
+
+#define DOTNET_FFI_ERRLOG( fmt, ... ) \
+  printf( "DOTNET_FFI_ERR %s File:%s:%d Func:%s Log:%s\n", fmt, __FILE__, __LINE__, __func__, __VA_ARGS__ )
+
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(dotnet_ffi)
@@ -66,22 +71,66 @@ PHP_FUNCTION(confirm_dotnet_ffi_compiled)
 	// int retEx = ExternTest(5);
 	// printf("retEx %d\n",retEx);
 	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
-	LoadClr("/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so");
+
 	RETURN_STR(strg);
 }
-PHP_FUNCTION(dotnet_ffi_arg_string_ret_string)
+PHP_FUNCTION(dotnet_ffi_ret_double_double)
+{
+	double *arg = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "d", &arg) == FAILURE) {
+		return;
+	}
+	int hr=-1;
+	double res = InvokeReturnDouble(&hr, *arg);
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("InvokeReturnDouble Fail hr: %d",hr);
+		return;
+	}
+	RETURN_DOUBLE(res);
+}
+
+PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
+{
+	zend_long *arg1 = NULL;
+	zend_long *arg2 = NULL;
+
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ll", &arg1, &arg2) == FAILURE) {
+		return;
+	}
+	int hr=-1;
+	zend_long result = InvokeReturnInt64(&hr, *arg1, *arg2);
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d",hr);
+		return;
+	}
+	RETURN_LONG(result);
+}
+
+PHP_FUNCTION(dotnet_ffi_ret_string_string)
 {
 	char *arg = NULL;
-	size_t arg_len, len;
+	size_t arg_len;
 	zend_string *strg;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
+	int hr=-1;
 
-	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
+	char *retString = NULL;
+	int strLen =0;
+	InvokeReturnString(&hr, arg, arg_len, &retString, &strLen);
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d",hr);
+		return;
+	}
+	zend_string *result =  zend_string_init(*retString, strLen, 0);
 
-	RETURN_STR(strg);
+	free(retString);
+	RETURN_STR(result);
+	zend_string_release(result);
 }
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
@@ -109,6 +158,15 @@ PHP_MINIT_FUNCTION(dotnet_ffi)
 	/* If you have INI entries, uncomment these lines
 	REGISTER_INI_ENTRIES();
 	*/
+	// @TODO load ini settings
+	int hr = LoadClr("/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so");
+	if(hr<0){
+		DOTNET_FFI_ERRLOG("LoadClr erro: %d",hr);
+	}
+	hr = InitClr();
+	if(hr<0){
+		DOTNET_FFI_ERRLOG("InitClr erro: %d", hr);
+	}
 	return SUCCESS;
 }
 /* }}} */
@@ -120,6 +178,10 @@ PHP_MSHUTDOWN_FUNCTION(dotnet_ffi)
 	/* uncomment this line if you have INI entries
 	UNREGISTER_INI_ENTRIES();
 	*/
+	int hr = DestructVm();
+	if(hr<0){
+		DOTNET_FFI_ERRLOG("DestructVm erro: %d",hr);
+	}
 	return SUCCESS;
 }
 /* }}} */
@@ -132,6 +194,7 @@ PHP_RINIT_FUNCTION(dotnet_ffi)
 #if defined(COMPILE_DL_DOTNET_FFI) && defined(ZTS)
 	ZEND_TSRMLS_CACHE_UPDATE();
 #endif
+
 	return SUCCESS;
 }
 /* }}} */
@@ -165,6 +228,9 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
  */
 const zend_function_entry dotnet_ffi_functions[] = {
 	PHP_FE(confirm_dotnet_ffi_compiled,	NULL)		/* For testing, remove later. */
+	PHP_FE(dotnet_ffi_ret_double_double,	NULL)
+	PHP_FE(dotnet_ffi_ret_long_long_long,	NULL)
+	PHP_FE(dotnet_ffi_ret_string_string,	NULL)
 	PHP_FE_END	/* Must be the last line in dotnet_ffi_functions[] */
 };
 /* }}} */
