@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <string>
 #include <random>
 
 #include "coreclrhost.h"
-// #include "coreclr_ctl.h"
 
+#include "coreclr_ctlpp.h"
 
 
 #define MANAGED_ASSEMBLY "invokee_test.dll"
@@ -50,8 +51,8 @@ const char* propertyKeys[] = { "TRUSTED_PLATFORM_ASSEMBLIES" };
 
 
 
-int LoadClr(const char* argPath);
-int LoadClr(const char* argPath){
+
+extern "C" int LoadClr(const char* argPath){
 
     realpath(argPath, runtimePath);
     printf("runtimePath: %s\n", runtimePath);
@@ -119,8 +120,8 @@ int LoadClr(const char* argPath){
 /**
  * Initialize CoreClr 
  */
-int InitClr();
-int InitClr(){
+
+extern "C" int InitClr(){
     const char *propertyValues[] = {tpaList.c_str()};
     // @TODO load signature from ini
     int hr = initializeCoreClr(
@@ -142,15 +143,15 @@ int InitClr(){
 }
 
 
-double InvokeReturnDouble(int &hr, double d);
+
 // public static double ReturnDouble(double d)
-double InvokeReturnDouble(int &hr, double d){
+extern "C" double InvokeReturnDouble(int *hr, double d){
     if(managedDelegateReturnDouble != nullptr){
-        hr = 1;
+        *hr = 1;
         printf("Managed delegate already created. Reuse it.\n");
         return managedDelegateReturnDouble(d);
     }
-    hr = createManagedDelegate(
+    *hr = createManagedDelegate(
             hostHandle,
             domainId,
             "invokee_test, Version=1.0.0.0",
@@ -158,7 +159,7 @@ double InvokeReturnDouble(int &hr, double d){
             "ReturnDouble",
             (void**)&managedDelegateReturnDouble);
     if (hr < 0){
-        printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
 
@@ -166,44 +167,45 @@ double InvokeReturnDouble(int &hr, double d){
     return managedDelegateReturnDouble(d);
 }
 
-void InvokeReturnString(int &hr, const std::string str, std::string &ret, int retLen);
+
 // public static string ReturnString(string str)
-void InvokeReturnString(int &hr, const std::string str, std::string &ret, int retLen){
-    if(managedDelegateInvokeReturnString != nullptr){
-        hr = 1;
+extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char *retStr, int *retLen){
+    if(managedDelegateInvokeReturnString == nullptr){
+        *hr = createManagedDelegate(
+                hostHandle,
+                domainId,
+                "invokee_test, Version=1.0.0.0",
+                "invokee_test.InvokeeTest",
+                "ReturnString",
+                (void**)&managedDelegateInvokeReturnString);
+        if (*hr < 0){
+            printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
+            return ;        
+        }
+    }else{
         printf("Managed delegate already created. Reuse it.\n");
-        ret = managedDelegateInvokeReturnString(str.c_str());
-        printf("ret %s\n", ret.c_str());
-        return ;
-    }
-    hr = createManagedDelegate(
-            hostHandle,
-            domainId,
-            "invokee_test, Version=1.0.0.0",
-            "invokee_test.InvokeeTest",
-            "ReturnString",
-            (void**)&managedDelegateInvokeReturnString);
-    if (hr < 0){
-        printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
-        return ;        
     }
 
     printf("Managed delegate created\n");
-    ret = managedDelegateInvokeReturnString(str.c_str());
-    printf("retStr %s\n", ret.c_str());
+    std::string ret = managedDelegateInvokeReturnString(inStr);
+    printf("nativecoderet %s\n", ret.c_str());
+    *retLen = ret.length()+1;
+    retStr = (char *)malloc((size_t)*retLen);
+    memcpy(retStr, ret.c_str(), (size_t)*retLen);
+    printf("nativecode ret: %s, retStr: %s\n", ret.c_str(), retStr);
     return ;
 }
 
 
-long InvokeReturnInt64(int &hr, long i, long j);
+
 // public static string ReturnString(string str)
-long InvokeReturnInt64(int &hr, long i, long j){
+extern "C" long InvokeReturnInt64(int *hr, long i, long j){
     if(managedDelegateInvokeReturnInt64 != nullptr){
-        hr = 1;
+        *hr = 1;
         printf("Managed delegate already created. Reuse it.\n");
         return managedDelegateInvokeReturnInt64(i, j);
     }
-    hr = createManagedDelegate(
+    *hr = createManagedDelegate(
             hostHandle,
             domainId,
             "invokee_test, Version=1.0.0.0",
@@ -211,7 +213,7 @@ long InvokeReturnInt64(int &hr, long i, long j){
             "ReturnInt64",
             (void**)&managedDelegateInvokeReturnInt64);
     if (hr < 0){
-        printf("coreclr_create_delegate failed - status: 0x%08x\n", hr);
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
 
@@ -220,15 +222,15 @@ long InvokeReturnInt64(int &hr, long i, long j){
 }
 
 // ========== Destruct VM ==============
-void DestructVm(int &hr);
-void DestructVm(int &hr){
-    hr = shutdownCoreClr(hostHandle, domainId);
 
-    if (hr < 0){
-        printf("coreclr_shutdown failed - status: 0x%08x\n", hr);
+extern "C" void DestructVm(int *hr){
+    *hr = shutdownCoreClr(hostHandle, domainId);
+
+    if (*hr < 0){
+        printf("coreclr_shutdown failed - status: 0x%08x\n", *hr);
         return ;
     }
-    printf("CoreCLR successfully shutdown status: 0x%08x\n", hr);
+    printf("CoreCLR successfully shutdown status: 0x%08x\n", *hr);
 }
 
 int main(int argc, char* argv[])
@@ -257,34 +259,36 @@ int main(int argc, char* argv[])
     std::mt19937 engine(seed_gen());
     std::uniform_real_distribution<> dist(0.0, 40.0);
     double csArg = dist(engine);
-    double ret = InvokeReturnDouble(hr, csArg);
+    double ret = InvokeReturnDouble(&hr, csArg);
     printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
 
     csArg = dist(engine);
-    ret = InvokeReturnDouble(hr, csArg);
+    ret = InvokeReturnDouble(&hr, csArg);
     printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
 
 
     std::uniform_int_distribution<> distInt(-40, 40);
     long n = distInt(engine);
     long m = distInt(engine);
-    long retInt64 = InvokeReturnInt64(hr, n, m);
+    long retInt64 = InvokeReturnInt64(&hr, n, m);
     printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
     m = distInt(engine);
-    retInt64 = InvokeReturnInt64(hr, n, m);
+    retInt64 = InvokeReturnInt64(&hr, n, m);
     printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
 
     std::string inputStr{"abcdefghijklmnopqrstuvwxyz1234567890"};
     int strLen = inputStr.length();
-    std::string retString{};
-    InvokeReturnString(hr, inputStr, retString, strLen);
-    printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString.c_str(), hr);
-
-    DestructVm(hr);
+    char *retString = nullptr;
+    int retLen = 0;
+    InvokeReturnString(&hr, inputStr.c_str(), inputStr.length(), retString, &strLen);
+    
+    printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
+    free(retString);
+    DestructVm(&hr);
     printf("shutdown with hr: %d\n", hr);
     return 0;
 }

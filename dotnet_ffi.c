@@ -27,8 +27,8 @@
 #include "ext/standard/info.h"
 #include "php_dotnet_ffi.h"
 
-#include "coreclrhost/coreclr_ctlpp.h"
-
+// #include "coreclrhost/coreclr_ctlpp.h"
+#include "coreclr_ctl.h"
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(dotnet_ffi)
@@ -63,7 +63,8 @@ PHP_FUNCTION(confirm_dotnet_ffi_compiled)
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
-
+	// int retEx = ExternTest(5);
+	// printf("retEx %d\n",retEx);
 	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
 	LoadClr("/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so");
 	RETURN_STR(strg);
