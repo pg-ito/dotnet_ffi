@@ -193,7 +193,7 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
     std::string ret = managedDelegateInvokeReturnString(inStr);
     *retLen = ret.length()+1;
     *retStr = (char *)malloc((size_t)*retLen);
-    memcpy(*retStr, ret.c_str(), (size_t)*retLen);
+    strcpy(*retStr, ret.c_str());
     printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
     return ;
 }
@@ -288,9 +288,18 @@ int main(int argc, char* argv[])
     char *retString = nullptr;
     int retLen = 0;
     InvokeReturnString(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen);
-    
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);
+
+
+    std::string inputStr2{"hello world"};
+    int strLen2 = inputStr2.length();
+    char *retString2 = nullptr;
+    int retLen2 = 0;
+    InvokeReturnString(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2);
+    printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
+    free(retString2);
+
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);
     return 0;

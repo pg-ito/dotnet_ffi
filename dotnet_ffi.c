@@ -31,8 +31,8 @@
 #include "lib/coreclr_ctlpp.h"
 
 
-#define DOTNET_FFI_ERRLOG( fmt, ... ) \
-  printf( "DOTNET_FFI_ERR %s File:%s:%d Func:%s Log:%s\n", fmt, __FILE__, __LINE__, __func__, __VA_ARGS__ )
+#define DOTNET_FFI_ERRLOG( fmt, args... ) \
+  fprintf(stderr, "DOTNET_FFI_ERR %s File:%s:%d Func:%s Log:%s\n"fmt, __FILE__, __LINE__, __func__, args )
 
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
@@ -68,6 +68,7 @@ PHP_FUNCTION(confirm_dotnet_ffi_compiled)
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
+
 	// int retEx = ExternTest(5);
 	// printf("retEx %d\n",retEx);
 	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
@@ -76,13 +77,13 @@ PHP_FUNCTION(confirm_dotnet_ffi_compiled)
 }
 PHP_FUNCTION(dotnet_ffi_ret_double_double)
 {
-	double *arg = NULL;
+	double arg;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "d", &arg) == FAILURE) {
 		return;
 	}
 	int hr=-1;
-	double res = InvokeReturnDouble(&hr, *arg);
+	double res = InvokeReturnDouble(&hr, arg);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnDouble Fail hr: %d",hr);
 		return;
@@ -92,15 +93,13 @@ PHP_FUNCTION(dotnet_ffi_ret_double_double)
 
 PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 {
-	zend_long *arg1 = NULL;
-	zend_long *arg2 = NULL;
-
-
+	zend_long arg1 = 0;
+	zend_long arg2 = 0;
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ll", &arg1, &arg2) == FAILURE) {
 		return;
 	}
 	int hr=-1;
-	zend_long result = InvokeReturnInt64(&hr, *arg1, *arg2);
+	zend_long result = InvokeReturnInt64(&hr, arg1, arg2);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d",hr);
 		return;
@@ -112,25 +111,23 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 {
 	char *arg = NULL;
 	size_t arg_len;
-	zend_string *strg;
+
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
 	int hr=-1;
-
 	char *retString = NULL;
-	int strLen =0;
+	int strLen = 0;
 	InvokeReturnString(&hr, arg, arg_len, &retString, &strLen);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d",hr);
 		return;
 	}
-	zend_string *result =  zend_string_init(*retString, strLen, 0);
+	zend_string *result = strpprintf(0, "%s", retString);
 
-	free(retString);
 	RETURN_STR(result);
-	zend_string_release(result);
+	efree(retString);
 }
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and

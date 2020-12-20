@@ -11,11 +11,25 @@ foreach($functions as $func) {
     echo $func."$br\n";
 }
 echo "$br\n";
-$function = 'confirm_' . $module . '_compiled';
-if (extension_loaded($module)) {
-	$str = $function($module);
-} else {
-	$str = "Module $module is not compiled into PHP";
-}
-echo "$str\n";
-?>
+
+if (!extension_loaded($module)) {
+	echo "ERROR! {$module} is not loaded!{$br}";
+	exit(255);
+} 
+
+
+
+
+$retDouble = dotnet_ffi_ret_double_double(16.0);
+echo '$retDouble ================'.$br;
+var_dump($retDouble);
+
+$retInt = dotnet_ffi_ret_long_long_long(9801, 68030);
+echo '$retInt ================'.$br;
+var_dump($retInt);
+
+$retString = dotnet_ffi_ret_string_string('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.');
+echo '$retString ================'.$br;
+var_dump($retString);
+
+
