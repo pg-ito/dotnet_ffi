@@ -169,7 +169,7 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
 
 
 // public static string ReturnString(string str)
-extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char *retStr, int *retLen){
+extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char **retStr, int *retLen){
     if(managedDelegateInvokeReturnString == nullptr){
         *hr = createManagedDelegate(
                 hostHandle,
@@ -190,9 +190,11 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
     std::string ret = managedDelegateInvokeReturnString(inStr);
     printf("nativecoderet %s\n", ret.c_str());
     *retLen = ret.length()+1;
-    retStr = (char *)malloc((size_t)*retLen);
-    memcpy(retStr, ret.c_str(), (size_t)*retLen);
-    printf("nativecode ret: %s, retStr: %s\n", ret.c_str(), retStr);
+    
+    char *tmp = (char *)malloc((size_t)*retLen);
+    memcpy(tmp, ret.c_str(), (size_t)*retLen);
+    *retStr = tmp;
+    printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
     return ;
 }
 
@@ -284,7 +286,7 @@ int main(int argc, char* argv[])
     int strLen = inputStr.length();
     char *retString = nullptr;
     int retLen = 0;
-    InvokeReturnString(&hr, inputStr.c_str(), inputStr.length(), retString, &strLen);
+    InvokeReturnString(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen);
     
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);

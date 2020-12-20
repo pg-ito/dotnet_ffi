@@ -11,7 +11,7 @@ extern "C" {
 int LoadClr(const char *argPath);
 int InitClr();
 double InvokeReturnDouble(int *hr, double d);
-void InvokeReturnString(int *hr, const char *inStr, int inLen, char *retStr, int *retLen);
+void InvokeReturnString(int *hr, const char *inStr, int inLen, char **retStr, int *retLen);
 long InvokeReturnInt64(int *hr, long i, long j);
 void DestructVm(int *hr);
 
