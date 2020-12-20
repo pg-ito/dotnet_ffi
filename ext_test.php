@@ -14,6 +14,30 @@ echo "Functions available in the test extension:$br\n";
 foreach($functions as $func) {
     echo $func."$br\n";
 }
+echo "$br\n";
 
-echo confirm_dotnet_ffi_compiled('call from '.__FILE__).PHP_EOL;
+if (!extension_loaded($module)) {
+	echo "ERROR! {$module} is not loaded!{$br}";
+	exit(255);
+} 
+
+$retDefault = confirm_dotnet_ffi_compiled('testmessage');
+var_dump($retDefault);
+
+error_reporting(E_ALL);
+
+
+$retDouble = dotnet_ffi_ret_double_double(16.0);
+echo '$retDouble ================'.$br;
+var_dump($retDouble);
+exit;
+
+$retInt = dotnet_ffi_ret_long_long_long(9801, 68030);
+echo '$retInt ================'.$br;
+var_dump($retInt);
+
+$retString = dotnet_ffi_ret_string_string('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.');
+echo '$retString ================'.$br;
+var_dump($retString);
+
 
