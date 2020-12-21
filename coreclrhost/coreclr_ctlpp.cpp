@@ -23,11 +23,13 @@
 
 
 typedef double (*double_return_docuble_method_ptr)(const double d);
-typedef long (*int64_int64_return_int64_method_ptr)(const long i, const long j);
+typedef int64_t (*int64_int64_return_int64_method_ptr)(const int64_t i, const int64_t j);
+typedef int64_t (*return_int64_arg_int64_method_ptr)(const int64_t i);
 typedef char* (*string_return_string_method_ptr)(const char* str);
 
 double_return_docuble_method_ptr managedDelegateReturnDouble{nullptr};
 int64_int64_return_int64_method_ptr managedDelegateInvokeReturnInt64{nullptr};
+return_int64_arg_int64_method_ptr managedDelegate_return_int64_arg_int64{nullptr};
 string_return_string_method_ptr managedDelegateInvokeReturnString{nullptr};
 
 
@@ -123,7 +125,6 @@ extern "C" int LoadClr(const char* argPath){
 /**
  * Initialize CoreClr 
  */
-
 extern "C" int InitClr(){
     const char *propertyValues[] = {tpaList.c_str()};
     // @TODO load signature from ini
@@ -145,7 +146,28 @@ extern "C" int InitClr(){
     return hr;
 }
 
-
+// public static Int64 ReturnInt64(Int64 i)
+extern "C" int64_t invoke_ret_s64_arg_s64(int *hr, int64_t i){
+    if(managedDelegate_return_int64_arg_int64 != nullptr){
+        *hr = 1;
+        printf("Managed delegate already created. Reuse it.\n");
+        return managedDelegate_return_int64_arg_int64(i);
+    }
+    *hr = createManagedDelegate(
+            hostHandle,
+            domainId,
+            "invokee_test, Version=1.0.0.0",
+            "invokee_test.InvokeeTest",
+            "return_int64_arg_int64",
+            (void**)&managedDelegate_return_int64_arg_int64);
+    if (hr < 0){
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
+        return 0.0f;        
+    }
+    *hr = 1;
+    printf("Managed delegate created\n");
+    return managedDelegate_return_int64_arg_int64(i);
+}
 
 // public static double ReturnDouble(double d)
 extern "C" double InvokeReturnDouble(int *hr, double d){
@@ -201,8 +223,8 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
 
 
 
-// public static string ReturnString(string str)
-extern "C" long InvokeReturnInt64(int *hr, long i, long j){
+// public static long InvokeReturnInt64(long i)
+extern "C" int64_t InvokeReturnInt64(int *hr, int64_t i, int64_t j){
     if(managedDelegateInvokeReturnInt64 != nullptr){
         *hr = 1;
         printf("Managed delegate already created. Reuse it.\n");
@@ -223,6 +245,8 @@ extern "C" long InvokeReturnInt64(int *hr, long i, long j){
     printf("Managed delegate created\n");
     return managedDelegateInvokeReturnInt64(i, j);
 }
+
+
 
 // ========== Destruct VM ==============
 
@@ -259,6 +283,8 @@ int main(int argc, char* argv[])
     }
 
     // ========== invoke managed code ==========
+    
+    printf("\n================= InvokeReturnDouble test =================\n");
     std::random_device seed_gen;
     std::mt19937 engine(seed_gen());
     std::uniform_real_distribution<> dist(0.0, 40.0);
@@ -271,18 +297,22 @@ int main(int argc, char* argv[])
     printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
 
 
+    printf("\n================= InvokeReturnInt64 test =================\n");
+
     std::uniform_int_distribution<> distInt(-40, 40);
-    long n = distInt(engine);
-    long m = distInt(engine);
-    long retInt64 = InvokeReturnInt64(&hr, n, m);
-    printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
+    long long n = distInt(engine);
+    long long m = distInt(engine);
+    long long retInt64 = InvokeReturnInt64(&hr, n, m);
+    printf("input: n=%lld m=%lld, Managed code returned: %lld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
     m = distInt(engine);
     retInt64 = InvokeReturnInt64(&hr, n, m);
-    printf("input: n=%ld m=%ld, Managed code returned: %ld, hr: %d\n", n, m, retInt64, hr);
+    printf("input: n=%lld m=%lld, Managed code returned: %lld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
+
+    printf("\n================= InvokeReturnString test =================\n");
 
     std::string inputStr{"1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ."};
     int strLen = inputStr.length();
@@ -307,6 +337,24 @@ int main(int argc, char* argv[])
     InvokeReturnString(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2);
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
     free(retString2);
+
+
+    printf("\n================= invoke_ret_s64_arg_s64 test =================\n");
+
+    for(long long i=0;i<13;++i){
+        retInt64 = invoke_ret_s64_arg_s64(&hr, i);
+        printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", i, retInt64, hr);
+    }
+
+    std::uniform_int_distribution<> distPositiveInt(0, 50);
+    n = distPositiveInt(engine);
+    retInt64 = invoke_ret_s64_arg_s64(&hr, n);
+    printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
+
+    n = distPositiveInt(engine);
+    retInt64 = invoke_ret_s64_arg_s64(&hr, n);
+    printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
+
 
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);

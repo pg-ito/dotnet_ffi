@@ -128,7 +128,6 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 	}
 	
 	zend_string *result = strpprintf(0, "%s", retString);
-	//zend_string *result = strpprintf(0, "stringtest");
 	RETURN_STR(result);
 	efree(retString);
 }
