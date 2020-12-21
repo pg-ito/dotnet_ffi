@@ -53,11 +53,12 @@ const char* propertyKeys[] = { "TRUSTED_PLATFORM_ASSEMBLIES" };
 
 
 
-
 extern "C" int LoadClr(const char* argPath){
 
+    DOTNET_FFI_DEBUGLOG("argPath %s\n", argPath);
     if(initializeCoreClr != NULL && createManagedDelegate != NULL && shutdownCoreClr != NULL){
-
+        printf("Already Clr loaded");
+        return 1;
     }
     realpath(argPath, runtimePath);
     printf("runtimePath: %s\n", runtimePath);
@@ -80,7 +81,7 @@ extern "C" int LoadClr(const char* argPath){
     managedLibraryPath.append(MANAGED_ASSEMBLY);
 
     coreClr = dlopen(coreClrPath.c_str(), RTLD_NOW | RTLD_LOCAL);
-    if (coreClr == NULL)
+    if (coreClr == nullptr)
     {
         printf("ERROR: Failed to load CoreCLR from %s\n", coreClrPath.c_str());
         return -1;
@@ -94,19 +95,19 @@ extern "C" int LoadClr(const char* argPath){
     createManagedDelegate = (coreclr_create_delegate_ptr)dlsym(coreClr, "coreclr_create_delegate");
     shutdownCoreClr = (coreclr_shutdown_ptr)dlsym(coreClr, "coreclr_shutdown");
 
-    if (initializeCoreClr == NULL)
+    if (initializeCoreClr == nullptr)
     {
         printf("coreclr_initialize not found");
         return -1;
     }
 
-    if (createManagedDelegate == NULL)
+    if (createManagedDelegate == nullptr)
     {
         printf("coreclr_create_delegate not found");
         return -1;
     }
 
-    if (shutdownCoreClr == NULL)
+    if (shutdownCoreClr == nullptr)
     {
         printf("coreclr_shutdown not found");
         return -1;

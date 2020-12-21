@@ -1,8 +1,10 @@
 #ifndef CORECLR_CTLPP_H
 #define CORECLR_CTLPP_H
 
-// #include "coreclrhost.h"
-// #include <string.h>
+
+#define DEBUG 1
+#define DOTNET_FFI_DEBUGLOG(fmt, ...) do { if (DEBUG) fprintf(stderr, "DOTNET_FFI_DEBUG %s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__); } while (0)
+#define DOTNET_FFI_ERRLOG(fmt, ...) do { fprintf(stderr, "DOTNET_FFI_ERROR! %s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__); } while (0)
 
 #ifdef __cplusplus 
 extern "C" { 

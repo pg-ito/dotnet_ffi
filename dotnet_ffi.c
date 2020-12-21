@@ -30,9 +30,8 @@
 // #include "coreclrhost/coreclr_ctlpp.h"
 #include "lib/coreclr_ctlpp.h"
 
-// @TODO fix error log macro. may be crash.
-#define DOTNET_FFI_ERRLOG( fmt, args... ) \
-  fprintf(stderr, "DOTNET_FFI_ERR File:%s:%d Func:%s Log:%s\n"fmt, __FILE__, __LINE__, __func__, args )
+
+
 
 
 /* If you declare any globals in php_dotnet_ffi.h uncomment this:
@@ -85,7 +84,7 @@ PHP_FUNCTION(dotnet_ffi_ret_double_double)
 	int hr=-1;
 	double res = InvokeReturnDouble(&hr, arg);
 	if(hr < 0){
-		DOTNET_FFI_ERRLOG("InvokeReturnDouble Fail hr: %d",hr);
+		DOTNET_FFI_ERRLOG("InvokeReturnDouble Fail hr: %d\n",hr);
 		return;
 	}
 	RETURN_DOUBLE(res);
@@ -102,7 +101,7 @@ PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 	zend_long result = InvokeReturnInt64(&hr, arg1, arg2);
 	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
 	if(hr < 0){
-		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d",hr);
+		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d\n",hr);
 		return;
 	}
 	RETURN_LONG(result);
@@ -123,7 +122,7 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 	InvokeReturnString(&hr, arg, arg_len, &retString, &strLen);
 	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
 	if(hr < 0){
-		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d",hr);
+		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d\n",hr);
 		return;
 	}
 	
