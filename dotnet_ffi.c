@@ -34,22 +34,19 @@
 
 
 
-/* If you declare any globals in php_dotnet_ffi.h uncomment this:
+/* If you declare any globals in php_dotnet_ffi.h uncomment this: */
 ZEND_DECLARE_MODULE_GLOBALS(dotnet_ffi)
-*/
+
 
 /* True global resources - no need for thread safety here */
 static int le_dotnet_ffi;
 
 /* {{{ PHP_INI
  */
-/* Remove comments and fill if you need to have entries in php.ini
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("dotnet_ffi.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_dotnet_ffi_globals, dotnet_ffi_globals)
-    STD_PHP_INI_ENTRY("dotnet_ffi.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.libcoreclr_file_path",      "/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so", PHP_INI_SYSTEM, OnUpdateString, libcoreclr_file_path, zend_dotnet_ffi_globals, dotnet_ffi_globals)
 PHP_INI_END()
-*/
-/* }}} */
+
 
 /* Remove the following function when you have successfully modified config.m4
    so that your module can be compiled into PHP, it exists only for testing
@@ -88,6 +85,22 @@ PHP_FUNCTION(dotnet_ffi_ret_double_double)
 		return;
 	}
 	RETURN_DOUBLE(res);
+}
+
+PHP_FUNCTION(dotnet_ffi_ret_s64_arg_s64)
+{
+	zend_long arg;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &arg) == FAILURE) {
+		return;
+	}
+	int hr=-1;
+	zend_long res = invoke_ret_s64_arg_s64(&hr, arg);
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("ret_int64_arg_int64 Fail hr: %d\n",hr);
+		return;
+	}
+	RETURN_LONG(res);
 }
 
 PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
@@ -138,26 +151,26 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 */
 
 
-/* {{{ php_dotnet_ffi_init_globals
- */
-/* Uncomment this function if you have INI entries
+
+/* {{{ php_dotnet_ffi_init_globals  */
+
+
 static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_globals)
 {
-	dotnet_ffi_globals->global_value = 0;
-	dotnet_ffi_globals->global_string = NULL;
+	dotnet_ffi_globals->libcoreclr_file_path = NULL;
 }
-*/
-/* }}} */
+
 
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(dotnet_ffi)
 {
-	/* If you have INI entries, uncomment these lines
+	ZEND_INIT_MODULE_GLOBALS(dotnet_ffi, php_dotnet_ffi_init_globals, NULL)
+	/* If you have INI entries, uncomment these lines */
 	REGISTER_INI_ENTRIES();
-	*/
+	
 	// @TODO load ini settings
-	int hr = LoadClr("/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so");
+	int hr = LoadClr(INI_STR("dotnet_ffi.libcoreclr_file_path"));
 	if(hr<0){
 		DOTNET_FFI_ERRLOG("LoadClr erro: %d",hr);
 	}
@@ -173,9 +186,9 @@ PHP_MINIT_FUNCTION(dotnet_ffi)
  */
 PHP_MSHUTDOWN_FUNCTION(dotnet_ffi)
 {
-	/* uncomment this line if you have INI entries
+	/* uncomment this line if you have INI entries */
 	UNREGISTER_INI_ENTRIES();
-	*/
+	
 	int hr = DestructVm();
 	if(hr<0){
 		DOTNET_FFI_ERRLOG("DestructVm erro: %d",hr);
@@ -214,9 +227,9 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
 	php_info_print_table_header(2, "dotnet_ffi support", "enabled");
 	php_info_print_table_end();
 
-	/* Remove comments if you have entries in php.ini
+	/* Remove comments if you have entries in php.ini */
 	DISPLAY_INI_ENTRIES();
-	*/
+	
 }
 /* }}} */
 
@@ -226,6 +239,7 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
  */
 const zend_function_entry dotnet_ffi_functions[] = {
 	PHP_FE(confirm_dotnet_ffi_compiled,	NULL)		/* For testing, remove later. */
+	PHP_FE(dotnet_ffi_ret_s64_arg_s64,	NULL)
 	PHP_FE(dotnet_ffi_ret_double_double,	NULL)
 	PHP_FE(dotnet_ffi_ret_long_long_long,	NULL)
 	PHP_FE(dotnet_ffi_ret_string_string,	NULL)

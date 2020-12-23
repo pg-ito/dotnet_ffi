@@ -24,12 +24,12 @@
 
 typedef double (*double_return_docuble_method_ptr)(const double d);
 typedef int64_t (*int64_int64_return_int64_method_ptr)(const int64_t i, const int64_t j);
-typedef int64_t (*return_int64_arg_int64_method_ptr)(const int64_t i);
+typedef int64_t (*return_s4_arg_s64_method_ptr)(const int64_t i);
 typedef char* (*string_return_string_method_ptr)(const char* str);
 
 double_return_docuble_method_ptr managedDelegateReturnDouble{nullptr};
 int64_int64_return_int64_method_ptr managedDelegateInvokeReturnInt64{nullptr};
-return_int64_arg_int64_method_ptr managedDelegate_return_int64_arg_int64{nullptr};
+return_s4_arg_s64_method_ptr managedDelegate_return_s4_arg_s64{nullptr};
 string_return_string_method_ptr managedDelegateInvokeReturnString{nullptr};
 
 
@@ -148,33 +148,33 @@ extern "C" int InitClr(){
 }
 
 // public static Int64 ReturnInt64(Int64 i)
-extern "C" int64_t invoke_ret_s64_arg_s64(int *hr, int64_t i){
-    if(managedDelegate_return_int64_arg_int64 != nullptr){
+extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i){
+    if(managedDelegate_return_s4_arg_s64 != nullptr){
         *hr = 1;
-        printf("Managed delegate already created. Reuse it.\n");
-        return managedDelegate_return_int64_arg_int64(i);
+        DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
+        return managedDelegate_return_s4_arg_s64(i);
     }
     *hr = createManagedDelegate(
             hostHandle,
             domainId,
             "invokee_test, Version=1.0.0.0",
             "invokee_test.InvokeeTest",
-            "return_int64_arg_int64",
-            (void**)&managedDelegate_return_int64_arg_int64);
+            "return_s64_arg_s64",
+            (void**)&managedDelegate_return_s4_arg_s64);
     if (hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
     *hr = 1;
     printf("Managed delegate created\n");
-    return managedDelegate_return_int64_arg_int64(i);
+    return managedDelegate_return_s4_arg_s64(i);
 }
 
 // public static double ReturnDouble(double d)
 extern "C" double InvokeReturnDouble(int *hr, double d){
     if(managedDelegateReturnDouble != nullptr){
         *hr = 1;
-        printf("Managed delegate already created. Reuse it.\n");
+        DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
         return managedDelegateReturnDouble(d);
     }
     *hr = createManagedDelegate(
@@ -209,7 +209,7 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
             return ;        
         }
     }else{
-        printf("Managed delegate already created. Reuse it.\n");
+        DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
     }
 
     printf("Managed delegate created\n");
@@ -225,10 +225,10 @@ extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char 
 
 
 // public static long InvokeReturnInt64(long i)
-extern "C" int64_t InvokeReturnInt64(int *hr, int64_t i, int64_t j){
+extern "C" long long InvokeReturnInt64(int *hr, long long i, long long j){
     if(managedDelegateInvokeReturnInt64 != nullptr){
         *hr = 1;
-        printf("Managed delegate already created. Reuse it.\n");
+        DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
         return managedDelegateInvokeReturnInt64(i, j);
     }
     *hr = createManagedDelegate(

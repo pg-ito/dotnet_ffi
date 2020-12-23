@@ -5,14 +5,14 @@ namespace invokee_test
     public class InvokeeTest
     {
         // fibonacci
-        public static Int64 return_int64_arg_int64(Int64 i){
+        public static Int64 return_s64_arg_s64(Int64 i){
             if(i<0){
                 return 0;
             }
             if(i==0 || i==1){
                 return i;
             }
-            return return_int64_arg_int64(i-2) + return_int64_arg_int64(i-1);
+            return return_s64_arg_s64(i-2) + return_s64_arg_s64(i-1);
         }
         public static Int64 ReturnInt64(Int64 i, Int64 j){
             Int64 ret = Math.Max(i, j);
