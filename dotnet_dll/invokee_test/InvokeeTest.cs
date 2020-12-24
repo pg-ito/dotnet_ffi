@@ -22,7 +22,7 @@ namespace invokee_test
         public static double ReturnDouble(double d){
             return Math.Sqrt(d);
         }
-        public static string ReturnString(string str){
+        public static string return_str_arg_str(string str){
             string ret = str.ToUpper();
             Console.WriteLine($"str {str}, ret {ret}");
             return ret;

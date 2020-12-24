@@ -45,6 +45,11 @@ static int le_dotnet_ffi;
  */
 PHP_INI_BEGIN()
     STD_PHP_INI_ENTRY("dotnet_ffi.libcoreclr_file_path",      "/mnt/d/proj/dotnet_invoke/php-src72/php-src-php-7.2.24/ext/dotnet_ffi/dotnet_dll/publish/libcoreclr.so", PHP_INI_SYSTEM, OnUpdateString, libcoreclr_file_path, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.target_project_name",      "invokee_test, Version=1.0.0.0", PHP_INI_SYSTEM, OnUpdateString, target_project_name, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.target_class_name",      "invokee_test.InvokeeTest", PHP_INI_SYSTEM, OnUpdateString, target_class_name, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_str_arg_str",     "InvokeReturnString", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_str_arg_str, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_s64_arg_s64",     "return_s64_arg_s64", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_s64_arg_s64, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+    STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl",     "return_double_arg_double", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_dbl_arg_dbl, zend_dotnet_ffi_globals, dotnet_ffi_globals)
 PHP_INI_END()
 
 
@@ -112,7 +117,6 @@ PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 	}
 	int hr=-1;
 	zend_long result = InvokeReturnInt64(&hr, arg1, arg2);
-	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("InvokeReturnInt64 Fail hr: %d\n",hr);
 		return;
@@ -125,17 +129,16 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 	char *arg = NULL;
 	size_t arg_len;
 
-
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
 	int hr=-1;
 	char *retString = emalloc(0);
 	int strLen = 0;
-	InvokeReturnString(&hr, arg, arg_len, &retString, &strLen);
-	// DOTNET_FFI_ERRLOG("InvokeReturnString hr: %d\n", hr);
+	printf(INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
+	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	if(hr < 0){
-		DOTNET_FFI_ERRLOG("InvokeReturnString Fail hr: %d\n",hr);
+		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
 		return;
 	}
 	
@@ -178,6 +181,7 @@ PHP_MINIT_FUNCTION(dotnet_ffi)
 	if(hr<0){
 		DOTNET_FFI_ERRLOG("InitClr erro: %d", hr);
 	}
+	SetTargtClass(INI_STR("dotnet_ffi.target_project_name"), INI_STR("dotnet_ffi.target_class_name"));
 	return SUCCESS;
 }
 /* }}} */

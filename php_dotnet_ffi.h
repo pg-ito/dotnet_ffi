@@ -45,6 +45,15 @@ extern zend_module_entry dotnet_ffi_module_entry;
 */
 ZEND_BEGIN_MODULE_GLOBALS(dotnet_ffi)
 	char *libcoreclr_file_path;
+  char *target_project_name;
+  char *target_class_name;
+  char *target_method_invoke_ret_str_arg_str;
+  char *target_method_invoke_ret_s64_arg_s64;
+  char *target_method_invoke_ret_s64_arg_s64_s64;
+  char *target_method_invoke_ret_s64_arg_s64_s64_s64;
+  char *target_method_invoke_ret_dbl_arg_dbl;
+  char *target_method_invoke_ret_double_arg_double_double;
+  char *target_method_invoke_ret_double_arg_double_double_double;
 ZEND_END_MODULE_GLOBALS(dotnet_ffi)
 
 

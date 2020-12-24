@@ -30,10 +30,12 @@ $startTime = microtime(true);
 $loops = 40;
 for($i=0;$i<=$loops;++$i){
 	$retInt64 = dotnet_ffi_ret_s64_arg_s64($i);
-	echo "{$i}\t{$retInt64}".PHP_EOL;
+	echo "{$i}:{$retInt64},\t";
 }
 $endTime = microtime(true);
 $elapsed = $endTime - $startTime;
+$resultFFI = $elapsed;
+echo PHP_EOL."---------------------------------------------------------------".PHP_EOL;
 echo "fibonacci sequence:\t{$loops}\telapsed:\t{$elapsed}".PHP_EOL;
 echo "--------- dotnet_ffi fibonacci END ---------$br\n";
 
@@ -43,14 +45,17 @@ $startTime = microtime(true);
 
 for($i=0;$i<=$loops;++$i){
 	$retInt64 = fibo_php($i);
-	echo "{$i}\t{$retInt64}".PHP_EOL;
+	echo "{$i}:{$retInt64},\t";
 }
 $endTime = microtime(true);
 $elapsed = $endTime - $startTime;
+$resultPHP = $elapsed;
+echo PHP_EOL."---------------------------------------------------------------".PHP_EOL;
 echo "fibonacci sequence:\t{$loops}\telapsed:\t{$elapsed}".PHP_EOL;
-
-
 echo "--------- pure php fibonacci END ---------$br\n";
+
+$ratio = round($resultPHP/$resultFFI, 2);
+echo "========= {$ratio} times faster than pure php =========".PHP_EOL;
 
 function fibo_php($i){
 	if($i<0){

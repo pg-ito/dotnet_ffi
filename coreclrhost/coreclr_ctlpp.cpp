@@ -50,6 +50,10 @@ void* hostHandle;
 unsigned int domainId;
 
 const char* propertyKeys[] = { "TRUSTED_PLATFORM_ASSEMBLIES" };
+std::string target_project_name{};
+std::string target_class_name{};
+std::string target_method_invoke_ret_string{};
+std::string target_method_invoke_ret_s64_arg_s64{};
 
 
 
@@ -147,6 +151,11 @@ extern "C" int InitClr(){
     return hr;
 }
 
+extern "C" void SetTargtClass(const char* project_name, const char* class_name ){
+    target_project_name = project_name;
+    target_class_name = class_name;
+}
+
 // public static Int64 ReturnInt64(Int64 i)
 extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i){
     if(managedDelegate_return_s4_arg_s64 != nullptr){
@@ -157,8 +166,8 @@ extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i){
     *hr = createManagedDelegate(
             hostHandle,
             domainId,
-            "invokee_test, Version=1.0.0.0",
-            "invokee_test.InvokeeTest",
+            target_project_name.c_str(),
+            target_class_name.c_str(),
             "return_s64_arg_s64",
             (void**)&managedDelegate_return_s4_arg_s64);
     if (hr < 0){
@@ -180,8 +189,8 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
     *hr = createManagedDelegate(
             hostHandle,
             domainId,
-            "invokee_test, Version=1.0.0.0",
-            "invokee_test.InvokeeTest",
+            target_project_name.c_str(),
+            target_class_name.c_str(),
             "ReturnDouble",
             (void**)&managedDelegateReturnDouble);
     if (hr < 0){
@@ -195,14 +204,14 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
 
 
 // public static string ReturnString(string str)
-extern "C" void InvokeReturnString(int *hr,  const char *inStr, int inLen, char **retStr, int *retLen){
+extern "C" void invoke_ret_str_arg_str(int *hr,  const char *inStr, int inLen, char **retStr, int *retLen, const char* method_name){
     if(managedDelegateInvokeReturnString == nullptr){
         *hr = createManagedDelegate(
                 hostHandle,
                 domainId,
-                "invokee_test, Version=1.0.0.0",
-                "invokee_test.InvokeeTest",
-                "ReturnString",
+                target_project_name.c_str(),
+                target_class_name.c_str(),
+                method_name,
                 (void**)&managedDelegateInvokeReturnString);
         if (*hr < 0){
             printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
@@ -234,8 +243,8 @@ extern "C" long long InvokeReturnInt64(int *hr, long long i, long long j){
     *hr = createManagedDelegate(
             hostHandle,
             domainId,
-            "invokee_test, Version=1.0.0.0",
-            "invokee_test.InvokeeTest",
+            target_project_name.c_str(),
+            target_class_name.c_str(),
             "ReturnInt64",
             (void**)&managedDelegateInvokeReturnInt64);
     if (*hr < 0){
@@ -319,7 +328,7 @@ int main(int argc, char* argv[])
     int strLen = inputStr.length();
     char *retString = nullptr;
     int retLen = 0;
-    InvokeReturnString(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen);
+    invoke_ret_str_arg_str(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen, "InvokeReturnString");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);
 
@@ -327,7 +336,7 @@ int main(int argc, char* argv[])
     int strLen1 = inputStr1.length();
     char *retString1 = nullptr;
     int retLen1 = 0;
-    InvokeReturnString(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1);
+    invoke_ret_str_arg_str(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1, "InvokeReturnString");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr1.c_str(), retString1, hr);
     free(retString1);
 
@@ -335,7 +344,7 @@ int main(int argc, char* argv[])
     int strLen2 = inputStr2.length();
     char *retString2 = nullptr;
     int retLen2 = 0;
-    InvokeReturnString(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2);
+    invoke_ret_str_arg_str(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2, "InvokeReturnString");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
     free(retString2);
 
