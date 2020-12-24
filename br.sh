@@ -1,13 +1,14 @@
 #!/bin/bash -xe
 cd $(dirname $0)
 
-
+export PHP_PATH=${PHP_PATH:-/usr/bin/}
 echo build and run
 
 
 coreclrhost/cpheader.sh
-/usr/local/php7_2_24dev/bin/phpize
-./configure --enable-dotnet_ffi -with-php-config=/usr/local/php7_2_24dev/bin/php-config
+# /usr/local/php7_2_24dev/bin/phpize
+${PHP_PATH}phpize
+./configure --enable-dotnet_ffi -with-php-config=${PHP_PATH}/php-config
 make clean 
 dotnet_dll/dotnet_publish.sh invokee_test
 # dotnet_dll/dotnet_publish.sh fibonacci
