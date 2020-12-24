@@ -100,7 +100,7 @@ PHP_FUNCTION(dotnet_ffi_ret_s64_arg_s64)
 		return;
 	}
 	int hr=-1;
-	zend_long res = invoke_ret_s64_arg_s64(&hr, arg);
+	zend_long res = invoke_ret_s64_arg_s64(&hr, arg, INI_STR("dotnet_ffi.target_method_invoke_ret_s64_arg_s64"));
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("ret_int64_arg_int64 Fail hr: %d\n",hr);
 		return;

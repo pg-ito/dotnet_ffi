@@ -157,7 +157,7 @@ extern "C" void SetTargtClass(const char* project_name, const char* class_name )
 }
 
 // public static Int64 ReturnInt64(Int64 i)
-extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i){
+extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i, const char* method_name){
     if(managedDelegate_return_s4_arg_s64 != nullptr){
         *hr = 1;
         DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
@@ -168,7 +168,7 @@ extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i){
             domainId,
             target_project_name.c_str(),
             target_class_name.c_str(),
-            "return_s64_arg_s64",
+            method_name,
             (void**)&managedDelegate_return_s4_arg_s64);
     if (hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
@@ -352,17 +352,17 @@ int main(int argc, char* argv[])
     printf("\n================= invoke_ret_s64_arg_s64 test =================\n");
 
     for(long long i=0;i<13;++i){
-        retInt64 = invoke_ret_s64_arg_s64(&hr, i);
+        retInt64 = invoke_ret_s64_arg_s64(&hr, i, "return_s64_arg_s64");
         printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", i, retInt64, hr);
     }
 
     std::uniform_int_distribution<> distPositiveInt(0, 50);
     n = distPositiveInt(engine);
-    retInt64 = invoke_ret_s64_arg_s64(&hr, n);
+    retInt64 = invoke_ret_s64_arg_s64(&hr, n, "return_s64_arg_s64");
     printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
 
     n = distPositiveInt(engine);
-    retInt64 = invoke_ret_s64_arg_s64(&hr, n);
+    retInt64 = invoke_ret_s64_arg_s64(&hr, n, "return_s64_arg_s64");
     printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
 
 

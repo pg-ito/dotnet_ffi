@@ -1,4 +1,5 @@
 <?php
+require_once 'fibonacci.php';
 
 $br = (php_sapi_name() == "cli")? "":"<br>";
 
@@ -23,7 +24,7 @@ if (!extension_loaded($module)) {
 
 
 error_reporting(E_ALL);
-
+echo phpversion().PHP_EOL;
 echo "--------- dotnet_ffi fibonacci START ---------$br\n";
 
 $startTime = microtime(true);
@@ -57,6 +58,7 @@ echo "--------- pure php fibonacci END ---------$br\n";
 $ratio = round($resultPHP/$resultFFI, 2);
 echo "========= {$ratio} times faster than pure php =========".PHP_EOL;
 
+/*
 function fibo_php($i){
 	if($i<0){
 		return 0;
@@ -66,3 +68,4 @@ function fibo_php($i){
 	}
 	return fibo_php($i-2) + fibo_php($i-1);
 }
+*/

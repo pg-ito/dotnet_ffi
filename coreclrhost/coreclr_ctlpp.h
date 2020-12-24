@@ -12,7 +12,7 @@ extern "C" {
 
 int LoadClr(const char *argPath);
 int InitClr();
-long long invoke_ret_s64_arg_s64(int *hr, long long i);
+long long invoke_ret_s64_arg_s64(int *hr, long long i, const char* method_name);
 double InvokeReturnDouble(int *hr, double d);
 void invoke_ret_str_arg_str(int *hr, const char *inStr, int inLen, char **retStr, int *retLen, const char* method_name);
 long long InvokeReturnInt64(int *hr, long long i, long long j);

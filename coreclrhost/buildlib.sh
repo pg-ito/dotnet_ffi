@@ -4,12 +4,12 @@ cd $(dirname $0)
 LIB_NAME="libcoreclr_ctlpp"
 
 LIB_DIR="lib"
-g++ -fPIC -c coreclr_ctlpp.cpp -ldl
+g++ -O3 -fPIC -c coreclr_ctlpp.cpp -ldl
 ar rcs ${LIB_NAME}.a coreclr_ctlpp.o
 cp -fpav coreclr_ctlpp.h ../${LIB_DIR}
 
-g++ --shared -fPIC -o ${LIB_NAME}.so coreclr_ctlpp.cpp -ldl
-g++ -fPIC -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
+g++ -O3 --shared -fPIC -o ${LIB_NAME}.so coreclr_ctlpp.cpp -ldl
+g++ -O3 -fPIC -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
 cp -fpav ${LIB_NAME}.* ../${LIB_DIR}
 # ls -alG
 # nm ${LIB_NAME}*

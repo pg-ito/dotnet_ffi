@@ -10,7 +10,7 @@ coreclrhost/cpheader.sh
 ./configure --enable-dotnet_ffi -with-php-config=/usr/local/php7_2_24dev/bin/php-config
 make clean 
 dotnet_dll/dotnet_publish.sh invokee_test
-dotnet_dll/dotnet_publish.sh fibonacci
+# dotnet_dll/dotnet_publish.sh fibonacci
 coreclrhost/buildlib.sh
 
 make -j6 
