@@ -1,8 +1,8 @@
 dotnet_ffi
 ===============
 
-Invoke dotnet core class from php.
-Approx. 10 time faster than pure php7.4. 
+Invoke dotnet core class from php.  
+Approx. 10 time faster than pure php7.4.   
 
 install
 -------------
