@@ -51,5 +51,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-.lib/
+.libs/
+.vs/
 build/
+dotnet_dll/publish_invokee_test/

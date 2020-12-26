@@ -64,7 +64,10 @@ extern "C" int LoadClr(const char* argPath){
         printf("Already Clr loaded");
         return 1;
     }
-    realpath(argPath, runtimePath);
+    if(realpath(argPath, runtimePath) == NULL){
+        DOTNET_FFI_ERRLOG("Error invalid argPath: %s",argPath);
+        return -1;
+    }
     printf("runtimePath: %s\n", runtimePath);
     char *last_slash = strrchr(runtimePath, FS_SEPARATOR[0]);
     if (last_slash != NULL){

@@ -21,8 +21,6 @@ if (!extension_loaded($module)) {
 	exit(255);
 } 
 
-$retDefault = confirm_dotnet_ffi_compiled('testmessage');
-var_dump($retDefault);
 
 error_reporting(E_ALL);
 

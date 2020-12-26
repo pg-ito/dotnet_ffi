@@ -53,29 +53,6 @@ PHP_INI_BEGIN()
 PHP_INI_END()
 
 
-/* Remove the following function when you have successfully modified config.m4
-   so that your module can be compiled into PHP, it exists only for testing
-   purposes. */
-
-/* Every user-visible function in PHP should document itself in the source */
-/* {{{ proto string confirm_dotnet_ffi_compiled(string arg)
-   Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_dotnet_ffi_compiled)
-{
-	char *arg = NULL;
-	size_t arg_len, len;
-	zend_string *strg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-
-	// int retEx = ExternTest(5);
-	// printf("retEx %d\n",retEx);
-	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "dotnet_ffi", arg);
-
-	RETURN_STR(strg);
-}
 PHP_FUNCTION(dotnet_ffi_ret_double_double)
 {
 	double arg;
@@ -242,7 +219,6 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
  * Every user visible function must have an entry in dotnet_ffi_functions[].
  */
 const zend_function_entry dotnet_ffi_functions[] = {
-	PHP_FE(confirm_dotnet_ffi_compiled,	NULL)		/* For testing, remove later. */
 	PHP_FE(dotnet_ffi_ret_s64_arg_s64,	NULL)
 	PHP_FE(dotnet_ffi_ret_double_double,	NULL)
 	PHP_FE(dotnet_ffi_ret_long_long_long,	NULL)

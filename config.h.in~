@@ -6,9 +6,6 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* */
-#undef HAVE_DOTNET_FFILIB
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -36,26 +33,23 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-#undef NO_MINUS_C_MINUS_O
-
 /* Define to the address where bug reports for this package should be sent. */
-#undef PACKAGE_BUGREPORT
+/* #undef PACKAGE_BUGREPORT */
 
 /* Define to the full name of this package. */
-#undef PACKAGE_NAME
+/* #undef PACKAGE_NAME */
 
 /* Define to the full name and version of this package. */
-#undef PACKAGE_STRING
+/* #undef PACKAGE_STRING */
 
 /* Define to the one symbol short name of this package. */
-#undef PACKAGE_TARNAME
+/* #undef PACKAGE_TARNAME */
 
 /* Define to the home page for this package. */
-#undef PACKAGE_URL
+/* #undef PACKAGE_URL */
 
 /* Define to the version of this package. */
-#undef PACKAGE_VERSION
+/* #undef PACKAGE_VERSION */
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
