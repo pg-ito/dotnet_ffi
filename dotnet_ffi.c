@@ -112,7 +112,7 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 	int hr=-1;
 	char *retString = emalloc(0);
 	int strLen = 0;
-	printf(INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
+	// printf(INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
