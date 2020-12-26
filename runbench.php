@@ -31,11 +31,13 @@ $startTime = microtime(true);
 // $loops = 40;
 define('FIBONACCI_LOOPS', 40);
 
-$resultDotnetFFI = require 'runbench_ffi.php';
-var_dump($resultDotnetFFI);
 
 $resultPurePHP = require 'runbench_purephp.php';
 var_dump($resultPurePHP);
+
+$resultDotnetFFI = require 'runbench_ffi.php';
+var_dump($resultDotnetFFI);
+
 
 $ratio = round($resultPurePHP/$resultDotnetFFI, 2);
 echo "========= {$ratio} times faster than pure php =========".PHP_EOL;
