@@ -57,6 +57,15 @@ ZEND_BEGIN_MODULE_GLOBALS(dotnet_ffi)
 ZEND_END_MODULE_GLOBALS(dotnet_ffi)
 
 
+/*
+PHP_METHOD(DotnetFFI, __construct);
+PHP_METHOD(DotnetFFI, ret_s64_arg_s64);
+*/
+
+int php_dotnet_ffi_core_clr_initialize();
+
+
+
 
 /* Always refer to the globals in your function as DOTNET_FFI_G(variable).
    You are encouraged to rename these macros something shorter, see
@@ -69,6 +78,7 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #endif
 
 #endif	/* PHP_DOTNET_FFI_H */
+
 
 /*
  * Local variables:

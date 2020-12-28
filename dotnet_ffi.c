@@ -41,6 +41,9 @@ ZEND_DECLARE_MODULE_GLOBALS(dotnet_ffi)
 /* True global resources - no need for thread safety here */
 static int le_dotnet_ffi;
 
+zend_class_entry *dotnet_ffi_entry_ce;
+
+
 /* {{{ PHP_INI
  */
 PHP_INI_BEGIN()
@@ -51,6 +54,7 @@ PHP_INI_BEGIN()
     STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_s64_arg_s64",     "return_s64_arg_s64", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_s64_arg_s64, zend_dotnet_ffi_globals, dotnet_ffi_globals)
     STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl",     "return_double_arg_double", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_dbl_arg_dbl, zend_dotnet_ffi_globals, dotnet_ffi_globals)
 PHP_INI_END()
+
 
 
 PHP_FUNCTION(dotnet_ffi_ret_double_double)
@@ -83,6 +87,36 @@ PHP_FUNCTION(dotnet_ffi_ret_s64_arg_s64)
 		return;
 	}
 	RETURN_LONG(res);
+}
+
+PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
+{
+	zend_long arg;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &arg) == FAILURE) {
+		return;
+	}
+	int hr=-1;
+	zend_long res = invoke_ret_s64_arg_s64(&hr, arg, INI_STR("dotnet_ffi.target_method_invoke_ret_s64_arg_s64"));
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("ret_int64_arg_int64 Fail hr: %d\n",hr);
+		return;
+	}
+	RETURN_LONG(res);
+}
+
+PHP_METHOD(DotnetFFI, __construct)
+{
+	zval *timezone_object = NULL;
+	char *time_str = NULL;
+	size_t time_str_len = 0;
+	zend_error_handling error_handling;
+
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_STRING(time_str, time_str_len)
+	ZEND_PARSE_PARAMETERS_END();
+
 }
 
 PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
@@ -131,12 +165,41 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 
 
 
+
+
 /* {{{ php_dotnet_ffi_init_globals  */
 
 
 static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_globals)
 {
 	dotnet_ffi_globals->libcoreclr_file_path = NULL;
+}
+
+static const zend_function_entry dotnet_ffi_funcs_entries[] = {
+    PHP_ME(DotnetFFI, __construct, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC)
+    PHP_FE_END
+};
+
+int php_dotnet_ffi_core_clr_initialize(){
+	// load ini settings
+	const char* clrPath = INI_STR("dotnet_ffi.libcoreclr_file_path");
+	int hr = LoadClr(clrPath);
+
+	if(hr<0){
+		fprintf(stderr, "DOTNET_FFI_ERROR! %s:%d:%s(): LoadClr erro: %d", __FILE__, __LINE__, __func__, hr);
+		return hr;
+	}
+	hr = InitClr();
+	if(hr<0){
+		fprintf(stderr, "DOTNET_FFI_ERROR! %s:%d:%s(): InitClr erro: %d", __FILE__, __LINE__, __func__, hr);
+		return hr;
+	}
+
+	const char* projectName = INI_STR("dotnet_ffi.target_project_name");
+	const char* className = INI_STR("dotnet_ffi.target_class_name");
+	SetTargtClass(projectName, className);
+	return hr;
 }
 
 
@@ -147,20 +210,22 @@ PHP_MINIT_FUNCTION(dotnet_ffi)
 	ZEND_INIT_MODULE_GLOBALS(dotnet_ffi, php_dotnet_ffi_init_globals, NULL)
 	/* If you have INI entries, uncomment these lines */
 	REGISTER_INI_ENTRIES();
-	
-	// @TODO load ini settings
-	int hr = LoadClr(INI_STR("dotnet_ffi.libcoreclr_file_path"));
-	if(hr<0){
-		DOTNET_FFI_ERRLOG("LoadClr erro: %d",hr);
-	}
-	hr = InitClr();
-	if(hr<0){
-		DOTNET_FFI_ERRLOG("InitClr erro: %d", hr);
-	}
-	SetTargtClass(INI_STR("dotnet_ffi.target_project_name"), INI_STR("dotnet_ffi.target_class_name"));
+	php_dotnet_ffi_core_clr_initialize();
+
+/*
+	zend_class_entry ce_dotnet_ffi;
+	INIT_CLASS_ENTRY(ce_dotnet_ffi, "DotnetFFI", dotnet_ffi_funcs_entries);
+	dotnet_ffi_entry_ce = zend_register_internal_class_ex(&ce_dotnet_ffi, NULL);
+*/
+
+
+
 	return SUCCESS;
 }
 /* }}} */
+
+
+
 
 /* {{{ PHP_MSHUTDOWN_FUNCTION
  */
@@ -172,6 +237,7 @@ PHP_MSHUTDOWN_FUNCTION(dotnet_ffi)
 	int hr = DestructVm();
 	if(hr<0){
 		DOTNET_FFI_ERRLOG("DestructVm erro: %d",hr);
+		return FAILURE;
 	}
 	return SUCCESS;
 }
@@ -212,6 +278,7 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
 	
 }
 /* }}} */
+
 
 /* {{{ dotnet_ffi_functions[]
  *

@@ -14,7 +14,7 @@ dotnet_dll/dotnet_publish.sh invokee_test
 # dotnet_dll/dotnet_publish.sh fibonacci
 coreclrhost/buildlib.sh
 
-make -j6 
+make -j6 -d --trace 
 # ldd modules/dotnet_ffi.so
 # nm modules/dotnet_ffi.so
 

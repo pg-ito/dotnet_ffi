@@ -19,6 +19,8 @@ void invoke_ret_str_arg_str(int *hr, const char *inStr, int inLen, char **retStr
 long long InvokeReturnInt64(int *hr, long long i, long long j);
 int DestructVm();
 
+
+
 #ifdef __cplusplus 
 } //end extern "C" 
 #endif 

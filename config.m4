@@ -40,8 +40,8 @@ if test "$PHP_DOTNET_FFI" != "no"; then
   dnl PHP_EVAL_INCLINE($LIBFOO_CFLAGS)
 
   dnl # --with-dotnet_ffi -> check with-path
-  SEARCH_PATH="/usr/local /usr ./"     # you might want to change this
-  SEARCH_FOR="lib/coreclr_ctlpp.h"  # you most likely want to change this
+  SEARCH_PATH="./ /usr/local /usr /usr/local/lib /usr/lib"     # you might want to change this
+  SEARCH_FOR="coreclrhost/coreclrhost.h"  # you most likely want to change this
   if test -r $PHP_DOTNET_FFI/$SEARCH_FOR; then # path given as parameter
     DOTNET_FFI_DIR=$PHP_DOTNET_FFI
   else # search default path list
