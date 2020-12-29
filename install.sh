@@ -26,9 +26,6 @@ sudo cp -ipav coreclrhost ${LIBCORECLR_CTL_DIR}
 
 sudo cp -ipav modules/dotnet_ffi.so ${EXTENSION_DIR}
 
-# grep '^\[dotnet_ffi\]' ${PHP_INI_FPATH}
-# INI_CONF_EXISTS=$?
-# echo "INI_CONF_EXISTS: ${INI_CONF_EXISTS}"
 
 if [ $(grep '^\[dotnet_ffi\]' ${PHP_INI_FPATH}|wc -l) -eq 0 ];then
   sudo bash -c "cat dotnet_ffi.ini >> ${PHP_INI_FPATH}"
