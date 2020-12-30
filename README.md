@@ -59,8 +59,11 @@ var_dump($returnString);// string(65) "1234567890-ABCDEFGHIJKLMNOPQRSTUVWXYZ,ABC
 run fibonacci bench test 
 -------------
 
+### for command line
+
 `./run.sh benchmarker/runbench.php`
 
+result sample
 ```
 PHPVer. 7.4.12
 --------- dotnet_ffi fibonacci bench START ---------
@@ -76,3 +79,8 @@ fibonacci sequence:     40      elapsed:        20.0272397995
 --------- pure php fibonacci bench END ---------
 ========= 10.48 times faster than pure php =========
 ```
+
+### for httpd server
+
+`benchmarker/run_ab.sh`
+
