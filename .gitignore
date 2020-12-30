@@ -53,6 +53,7 @@ dkms.conf
 
 .libs/
 .vs/
+.vscode/
 build/
 dotnet_dll/publish_invokee_test/
 coreclrhost/libcoreclr_ctlpp_app
