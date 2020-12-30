@@ -15,7 +15,7 @@
 # Precompiled Headers
 *.gch
 *.pch
-
+.\ab -c 3 -t 36000 -n 108000   http://172.21.26.180/runbench_ffi.php
 # Libraries
 *.lib
 *.a
@@ -57,3 +57,19 @@ dkms.conf
 build/
 dotnet_dll/publish_invokee_test/
 coreclrhost/libcoreclr_ctlpp_app
+
+
+Makefile
+Makefile.fragments
+Makefile.objects
+autom4te.cache/
+config.h
+config.h.in
+config.log
+config.nice
+config.status
+configure
+configure.ac
+install-sh
+libtool
+

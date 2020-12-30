@@ -19,7 +19,7 @@ install
 
 * install  
 
-  `sudo make install`
+  `./install.sh`
 
 
 config
