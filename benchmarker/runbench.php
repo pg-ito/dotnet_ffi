@@ -25,12 +25,12 @@ if (!extension_loaded($module)) {
 
 error_reporting(E_ALL);
 echo 'PHPVer. '.phpversion().PHP_EOL;
-echo "--------- dotnet_ffi fibonacci bench START ---------$br\n";
+
 
 $startTime = microtime(true);
 // $loops = 40;
 define('FIBONACCI_LOOPS', 40);
-
+$loops = isset($_GET['loops'])? intval($_GET['loops']) : FIBONACCI_LOOPS;
 
 $resultPurePHP = require 'runbench_purephp.php';
 var_dump($resultPurePHP);
