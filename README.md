@@ -59,7 +59,7 @@ var_dump($returnString);// string(65) "1234567890-ABCDEFGHIJKLMNOPQRSTUVWXYZ,ABC
 run fibonacci bench test 
 -------------
 
-`./run.sh runbench.php`
+`./run.sh benchmarker/runbench.php`
 
 ```
 PHPVer. 7.4.12
