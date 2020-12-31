@@ -1,4 +1,10 @@
 <?php
+$className = 'DotnetFFI';
+if(!class_exists($className)){
+	echo $className.' Class is not exists'.$br.PHP_EOL;
+	exit(255);
+}
+
 if(!defined('FIBONACCI_LOOPS')){
 	define('FIBONACCI_LOOPS', 40);
 }
@@ -7,7 +13,7 @@ echo "--------- dotnet_ffi fibonacci bench START ---------$br\n";
 
 $startTime = microtime(true);
 for($i=0;$i<=$loops;++$i){
-	$retInt64 = dotnet_ffi_ret_s64_arg_s64($i);
+	$retInt64 = DotnetFFI::ret_s64_arg_s64($i);
 	echo "{$i}:{$retInt64},\t";
 }
 $endTime = microtime(true);

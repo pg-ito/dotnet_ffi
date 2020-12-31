@@ -57,10 +57,10 @@ PHP_INI_END()
 
 
 
-PHP_FUNCTION(dotnet_ffi_ret_double_double)
+
+PHP_METHOD(DotnetFFI, ret_dbl_arg_dbl)
 {
 	double arg;
-
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "d", &arg) == FAILURE) {
 		return;
 	}
@@ -72,6 +72,7 @@ PHP_FUNCTION(dotnet_ffi_ret_double_double)
 	}
 	RETURN_DOUBLE(res);
 }
+
 
 
 PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
@@ -90,7 +91,7 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
 }
 
 
-PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
+PHP_METHOD(DotnetFFI, ret_s64_arg_s64_s64)
 {
 	zend_long arg1 = 0;
 	zend_long arg2 = 0;
@@ -106,27 +107,6 @@ PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 	RETURN_LONG(result);
 }
 
-PHP_FUNCTION(dotnet_ffi_ret_string_string)
-{
-	char *arg = NULL;
-	size_t arg_len;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-	int hr=-1;
-	char *retString = emalloc(0);
-	int strLen = 0;
-	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
-	if(hr < 0){
-		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
-		return;
-	}
-	
-	zend_string *result = strpprintf(0, "%s", retString);
-	RETURN_STR(result);
-	efree(retString);
-}
 PHP_METHOD(DotnetFFI, ret_str_arg_str)
 {
 	char *arg = NULL;
@@ -170,6 +150,8 @@ static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_glob
 static const zend_function_entry dotnet_ffi_funcs_entries[] = {
     PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_str_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_s64_arg_s64_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_dbl_arg_dbl, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
@@ -273,9 +255,6 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
  * Every user visible function must have an entry in dotnet_ffi_functions[].
  */
 const zend_function_entry dotnet_ffi_functions[] = {
-	PHP_FE(dotnet_ffi_ret_double_double,	NULL)
-	PHP_FE(dotnet_ffi_ret_long_long_long,	NULL)
-	PHP_FE(dotnet_ffi_ret_string_string,	NULL)
 	PHP_FE_END	/* Must be the last line in dotnet_ffi_functions[] */
 };
 /* }}} */
