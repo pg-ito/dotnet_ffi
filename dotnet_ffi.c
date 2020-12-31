@@ -73,26 +73,10 @@ PHP_FUNCTION(dotnet_ffi_ret_double_double)
 	RETURN_DOUBLE(res);
 }
 
-PHP_FUNCTION(dotnet_ffi_ret_s64_arg_s64)
-{
-	zend_long arg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &arg) == FAILURE) {
-		return;
-	}
-	int hr=-1;
-	zend_long res = invoke_ret_s64_arg_s64(&hr, arg, INI_STR("dotnet_ffi.target_method_invoke_ret_s64_arg_s64"));
-	if(hr < 0){
-		DOTNET_FFI_ERRLOG("ret_int64_arg_int64 Fail hr: %d\n",hr);
-		return;
-	}
-	RETURN_LONG(res);
-}
 
 PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
 {
 	zend_long arg;
-
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &arg) == FAILURE) {
 		return;
 	}
@@ -105,19 +89,6 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
 	RETURN_LONG(res);
 }
 
-PHP_METHOD(DotnetFFI, __construct)
-{
-	zval *timezone_object = NULL;
-	char *time_str = NULL;
-	size_t time_str_len = 0;
-	zend_error_handling error_handling;
-
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRING(time_str, time_str_len)
-	ZEND_PARSE_PARAMETERS_END();
-
-}
 
 PHP_FUNCTION(dotnet_ffi_ret_long_long_long)
 {
@@ -156,6 +127,27 @@ PHP_FUNCTION(dotnet_ffi_ret_string_string)
 	RETURN_STR(result);
 	efree(retString);
 }
+PHP_METHOD(DotnetFFI, ret_str_arg_str)
+{
+	char *arg = NULL;
+	size_t arg_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
+		return;
+	}
+	int hr=-1;
+	char *retString = emalloc(0);
+	int strLen = 0;
+	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
+		return;
+	}
+	
+	zend_string *result = strpprintf(0, "%s", retString);
+	RETURN_STR(result);
+	efree(retString);	
+}
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
    unfold functions in source code. See the corresponding marks just before
@@ -176,8 +168,8 @@ static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_glob
 }
 
 static const zend_function_entry dotnet_ffi_funcs_entries[] = {
-    PHP_ME(DotnetFFI, __construct, NULL, ZEND_ACC_PUBLIC)
-    PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_str_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
@@ -212,13 +204,9 @@ PHP_MINIT_FUNCTION(dotnet_ffi)
 	REGISTER_INI_ENTRIES();
 	php_dotnet_ffi_core_clr_initialize();
 
-/*
 	zend_class_entry ce_dotnet_ffi;
 	INIT_CLASS_ENTRY(ce_dotnet_ffi, "DotnetFFI", dotnet_ffi_funcs_entries);
 	dotnet_ffi_entry_ce = zend_register_internal_class_ex(&ce_dotnet_ffi, NULL);
-*/
-
-
 
 	return SUCCESS;
 }
@@ -285,7 +273,6 @@ PHP_MINFO_FUNCTION(dotnet_ffi)
  * Every user visible function must have an entry in dotnet_ffi_functions[].
  */
 const zend_function_entry dotnet_ffi_functions[] = {
-	PHP_FE(dotnet_ffi_ret_s64_arg_s64,	NULL)
 	PHP_FE(dotnet_ffi_ret_double_double,	NULL)
 	PHP_FE(dotnet_ffi_ret_long_long_long,	NULL)
 	PHP_FE(dotnet_ffi_ret_string_string,	NULL)
