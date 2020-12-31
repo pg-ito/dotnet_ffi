@@ -62,7 +62,9 @@ dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl="return_double_arg_double"
 EOM
 )
 
-sudo bash -c "echo ${INI_VALUES} > ${PHP_ADDITIONAL_INI_DIR}${DOTNET_FFI_INI_FILE}"
+echo "${INI_VALUES}"
+
+sudo bash -c "echo '${INI_VALUES}' > ${PHP_ADDITIONAL_INI_DIR}${DOTNET_FFI_INI_FILE}"
 
 echo -e "extension installed. Need reboot your httpd server.\n"
 
