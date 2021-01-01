@@ -23,6 +23,10 @@ if (!extension_loaded($module)) {
 
 
 error_reporting(E_ALL);
+echo 'PHPVer. '.phpversion()."$br\n";
+
+$startTime = microtime(true);
+echo "$br\n";
 
 $className = 'DotnetFFI';
 if(!class_exists($className)){
@@ -55,3 +59,5 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retDouble);
 echo "$br\n";
 echo "--------- END ---------$br\n";
+echo (microtime(true) - $startTime)." [sec.]$br\n";
+
