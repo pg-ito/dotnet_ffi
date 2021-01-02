@@ -121,12 +121,15 @@ PHP_METHOD(DotnetFFI, ret_str_arg_str)
 	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
+		efree(retString);
 		return;
 	}
 	
 	zend_string *result = strpprintf(0, "%s", retString);
+
 	RETURN_STR(result);
-	efree(retString);	
+	efree(result);
+	efree(retString);
 }
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and

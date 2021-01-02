@@ -15,11 +15,11 @@ echo ${EXTENSION_DIR}
 EXTENSION_DIR=${EXTENSION_DIR:-/usr/lib/php/20190902/}
 
 # e.g. export PHP_INI_FPATH=/usr/local/lsws/lsphp7_4_12/lib/php.ini
-PHP_INI_FPATH=${PHP_INI_FPATH:-/etc/php/7.4/cli/php.ini}
+PHP_INI_FPATH=${PHP_INI_FPATH:-/etc/php.d/7.4/cli/php.ini}
 echo ${PHP_INI_FPATH}
 
 # e.g. export PHP_ADDITIONAL_INI_DIR=/etc/php/7.4/apache2/conf.d 
-PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-/etc/php/7.4/apache2/conf.d/}
+PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-/etc/php.d/}
 echo ${PHP_ADDITIONAL_INI_DIR}
 
 DOTNET_FFI_INI_FILE=dotnet_ffi.ini
@@ -33,9 +33,10 @@ $(cat ${DOTNET_FFI_INI_FILE})
 EOM
 
 
-sudo cp -ipav coreclrhost ${LIBCORECLR_CTL_DIR}
+# sudo cp -ipav coreclrhost ${LIBCORECLR_CTL_DIR}
 
-sudo cp -ipav modules/dotnet_ffi.so ${EXTENSION_DIR}
+# sudo cp -ipav modules/dotnet_ffi.so ${EXTENSION_DIR}
+sudo make install
 
 
 # if [ $(grep '^\[dotnet_ffi\]' ${PHP_INI_FPATH}|wc -l) -eq 0 ];then

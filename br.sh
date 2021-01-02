@@ -6,16 +6,18 @@ echo build and run
 
 OPTS=$1
 
-coreclrhost/cpheader.sh
+# coreclrhost/cpheader.sh
 # /usr/local/php7_2_24dev/bin/phpize
+make clean 
+${PHP_PATH}phpize --clean
 ${PHP_PATH}phpize ${OPTS}
 ./configure --enable-dotnet_ffi -with-php-config=${PHP_PATH}/php-config
-make clean 
+
 dotnet_dll/dotnet_publish.sh invokee_test
 # dotnet_dll/dotnet_publish.sh fibonacci
 coreclrhost/buildlib.sh
 
-make -j6 
+make -j4
 # ldd modules/dotnet_ffi.so
 # nm modules/dotnet_ffi.so
 
