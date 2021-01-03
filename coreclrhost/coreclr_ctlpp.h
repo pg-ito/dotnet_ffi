@@ -2,7 +2,11 @@
 #define CORECLR_CTLPP_H
 
 
+// #define DEBUG 0
+#ifndef DEBUG
 #define DEBUG 0
+#endif
+
 #define DOTNET_FFI_DEBUGLOG(fmt, ...) do { if (DEBUG){ fprintf(stderr, "DOTNET_FFI_DEBUG %s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__);} } while (0)
 #define DOTNET_FFI_ERRLOG(fmt, ...) do { fprintf(stderr, "DOTNET_FFI_ERROR! %s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__); } while (0)
 

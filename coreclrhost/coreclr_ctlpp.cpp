@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
     int strLen = inputStr.length();
     char *retString = nullptr;
     int retLen = 0;
-    invoke_ret_str_arg_str(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen, "InvokeReturnString");
+    invoke_ret_str_arg_str(&hr, inputStr.c_str(), inputStr.length(), &retString, &strLen, "return_str_arg_str");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr.c_str(), retString, hr);
     free(retString);
 
@@ -339,7 +339,7 @@ int main(int argc, char* argv[])
     int strLen1 = inputStr1.length();
     char *retString1 = nullptr;
     int retLen1 = 0;
-    invoke_ret_str_arg_str(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1, "InvokeReturnString");
+    invoke_ret_str_arg_str(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1, "return_str_arg_str");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr1.c_str(), retString1, hr);
     free(retString1);
 
@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
     int strLen2 = inputStr2.length();
     char *retString2 = nullptr;
     int retLen2 = 0;
-    invoke_ret_str_arg_str(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2, "InvokeReturnString");
+    invoke_ret_str_arg_str(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2, "return_str_arg_str");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
     free(retString2);
 
