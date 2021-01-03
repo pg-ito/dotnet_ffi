@@ -65,7 +65,7 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retDouble);
 echo "$br\n";
 
-invoke_str_loops(111);
+invoke_str_loops(5);
 
 echo "--------- END ---------$br\n";
 echo (microtime(true) - $startTime)." [sec.]$br\n";

@@ -150,7 +150,7 @@ extern "C" int InitClr(){
         return -1;
     }
 
-    printf("CoreCLR started\n");
+    printf("CoreCLR started - status: 0x%08x\n", hr);
     return hr;
 }
 
@@ -178,7 +178,7 @@ extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i, const char* m
         return 0.0f;        
     }
     *hr = 1;
-    printf("Managed delegate created\n");
+    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegate_return_s4_arg_s64 created hr: 0x%08x\n", *hr);
     return managedDelegate_return_s4_arg_s64(i);
 }
 
@@ -201,7 +201,7 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
         return 0.0f;        
     }
     *hr = 1;
-    printf("Managed delegate created\n");
+    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegateReturnDouble created\n", NULL);
     return managedDelegateReturnDouble(d);
 }
 
@@ -223,8 +223,7 @@ extern "C" void invoke_ret_str_arg_str(int *hr,  const char *inStr, int inLen, c
     }else{
         DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
     }
-
-    printf("Managed delegate created\n");
+    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegateInvokeReturnString created. hr: 0x%08x\n", *hr);
     std::string ret = managedDelegateInvokeReturnString(inStr);
     *retLen = ret.length()+1;
     *retStr = (char *)malloc((size_t)*retLen);
@@ -276,6 +275,7 @@ extern "C" int DestructVm(){
 
 int main(int argc, char* argv[])
 {
+    printf("\n================= CoreClrCtlpp test code start =================\n");
     if(argc < 2){
         printf("need 1 runtime path argument\n");
         return 255;
@@ -286,22 +286,24 @@ int main(int argc, char* argv[])
         return 255;
     }
 
-
+    int hr = -1;
     // ========== coreclr start ==========
    
-    int hr = InitClr();
+    hr = InitClr();
     if(hr < 0){
         printf("initResult failed\n");
         return 255;
     }
 
     // ========== invoke managed code ==========
-    
+    long long retInt64 = 0;
+
     printf("\n================= InvokeReturnDouble test =================\n");
     std::random_device seed_gen;
     std::mt19937 engine(seed_gen());
     std::uniform_real_distribution<> dist(0.0, 40.0);
     double csArg = dist(engine);
+    printf("input: %lf \n",csArg);
     double ret = InvokeReturnDouble(&hr, csArg);
     printf("input: %lf , Managed code returned: %lf, hr: %d\n",csArg, ret, hr);
 
@@ -315,7 +317,7 @@ int main(int argc, char* argv[])
     std::uniform_int_distribution<> distInt(-40, 40);
     long long n = distInt(engine);
     long long m = distInt(engine);
-    long long retInt64 = InvokeReturnInt64(&hr, n, m);
+    retInt64 = InvokeReturnInt64(&hr, n, m);
     printf("input: n=%lld m=%lld, Managed code returned: %lld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
@@ -351,7 +353,6 @@ int main(int argc, char* argv[])
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
     free(retString2);
 
-
     printf("\n================= invoke_ret_s64_arg_s64 test =================\n");
 
     for(long long i=0;i<13;++i){
@@ -371,6 +372,7 @@ int main(int argc, char* argv[])
 
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);
+
     return 0;
 }
 

@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: 1b1735411147a5a84a4344c3ede584d6c4fffe06 $ */
+/* $Id: ce16b4fbf0aba210a673410ad92c7fc42ebd9365 $ */
 
 /* Let there be no top-level code beyond this point:
  * Only functions and classes, thanks!
@@ -521,7 +521,7 @@ NO_PROC_OPEN_ERROR;
                     $html_output = is_resource($html_file);
                     break;
                 case '--version':
-                    echo '$Id: 1b1735411147a5a84a4344c3ede584d6c4fffe06 $' . "\n";
+                    echo '$Id: ce16b4fbf0aba210a673410ad92c7fc42ebd9365 $' . "\n";
                     exit(1);
 
                 default:
