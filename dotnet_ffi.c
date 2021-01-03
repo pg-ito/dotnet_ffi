@@ -43,6 +43,12 @@ static int le_dotnet_ffi;
 
 zend_class_entry *dotnet_ffi_entry_ce;
 
+/* For compatibility with older PHP versions */
+#ifndef ZEND_PARSE_PARAMETERS_NONE
+#define ZEND_PARSE_PARAMETERS_NONE() \
+    ZEND_PARSE_PARAMETERS_START(0, 0) \
+    ZEND_PARSE_PARAMETERS_END()
+#endif
 
 /* {{{ PHP_INI
  */

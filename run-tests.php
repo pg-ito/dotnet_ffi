@@ -881,7 +881,7 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
         'session' => array('session.auto_start=0'),
         'tidy' => array('tidy.clean_output=0'),
         'zlib' => array('zlib.output_compression=Off'),
-        'xdebug' => array('xdebug.default_enable=0'),
+        'xdebug' => array('xdebug.default_enable=0','xdebug.mode=off'),
         'mbstring' => array('mbstring.func_overload=0'),
     );
 
@@ -1424,7 +1424,8 @@ function run_all_tests_parallel($test_files, $env, $redir_tested) {
                 "TEST_PHP_URI" => $sockUri,
             ],
             [
-                "suppress_errors" => TRUE
+                "suppress_errors" => TRUE,
+                'create_new_console' => TRUE,
             ]
         );
         if ($proc === FALSE) {
@@ -2472,12 +2473,9 @@ COMMAND $cmd
             save_text($test_clean, trim($section_text['CLEAN']), $temp_clean);
 
             if (!$no_clean) {
-                $clean_params = array();
-                settings2array($ini_overwrites, $clean_params);
-                $clean_params = settings2params($clean_params);
                 $extra = substr(PHP_OS, 0, 3) !== "WIN" ?
                     "unset REQUEST_METHOD; unset QUERY_STRING; unset PATH_TRANSLATED; unset SCRIPT_FILENAME; unset REQUEST_METHOD;" : "";
-                system_with_timeout("$extra $php $pass_options $extra_options -q $clean_params $no_file_cache \"$test_clean\"", $env);
+                system_with_timeout("$extra $php $pass_options $extra_options -q $orig_ini_settings $no_file_cache \"$test_clean\"", $env);
             }
 
             if (!$cfg['keep']['clean']) {

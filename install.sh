@@ -19,6 +19,8 @@ PHP_INI_FPATH=${PHP_INI_FPATH:-/etc/php.d/7.4/cli/php.ini}
 echo ${PHP_INI_FPATH}
 
 # e.g. export PHP_ADDITIONAL_INI_DIR=/etc/php/7.4/apache2/conf.d 
+
+PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-$(php-config --ini-path)}
 PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-/etc/php.d/}
 echo ${PHP_ADDITIONAL_INI_DIR}
 

@@ -21,10 +21,23 @@
 #ifndef PHP_DOTNET_FFI_H
 #define PHP_DOTNET_FFI_H
 
+
+
+
+
+
+
+
+
+
 extern zend_module_entry dotnet_ffi_module_entry;
 #define phpext_dotnet_ffi_ptr &dotnet_ffi_module_entry
 
 #define PHP_DOTNET_FFI_VERSION "0.1.0" /* Replace with version number for your extension */
+
+# if defined(ZTS) && defined(COMPILE_DL_DOTNET_FFI)
+ZEND_TSRMLS_CACHE_EXTERN()
+# endif
 
 #ifdef PHP_WIN32
 #	define PHP_DOTNET_FFI_API __declspec(dllexport)
@@ -37,6 +50,7 @@ extern zend_module_entry dotnet_ffi_module_entry;
 #ifdef ZTS
 #include "TSRM.h"
 #endif
+
 
 
 /*
@@ -52,8 +66,6 @@ ZEND_BEGIN_MODULE_GLOBALS(dotnet_ffi)
   char *target_method_invoke_ret_s64_arg_s64_s64;
   char *target_method_invoke_ret_s64_arg_s64_s64_s64;
   char *target_method_invoke_ret_dbl_arg_dbl;
-  char *target_method_invoke_ret_double_arg_double_double;
-  char *target_method_invoke_ret_double_arg_double_double_double;
 ZEND_END_MODULE_GLOBALS(dotnet_ffi)
 
 
