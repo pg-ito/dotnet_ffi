@@ -55,7 +55,7 @@ if test "$PHP_DOTNET_FFI" != "no"; then
 
   AC_MSG_CHECKING( phpdotnetffivariableis $PHP_DOTNET_FFI)
   dnl  SEARCH_PATH="./ /usr/local /usr /usr/local/lib /usr/lib"     # you might want to change this
-  SEARCH_PATH="./ /usr/local /usr /usr/local/lib /usr/lib"     # search only in current dir.
+  SEARCH_PATH="./ "     # search only in current dir.
   SEARCH_FOR="coreclrhost/coreclrhost.h"  # you most likely want to change this
   if test -r $PHP_DOTNET_FFI/$SEARCH_FOR; then # path given as parameter
     DOTNET_FFI_DIR=$PHP_DOTNET_FFI

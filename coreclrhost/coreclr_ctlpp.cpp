@@ -173,11 +173,10 @@ extern "C" long long  invoke_ret_s64_arg_s64(int *hr, long long i, const char* m
             target_class_name.c_str(),
             method_name,
             (void**)&managedDelegate_return_s4_arg_s64);
-    if (hr < 0){
+    if (*hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
-    *hr = 1;
     DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegate_return_s4_arg_s64 created hr: 0x%08x\n", *hr);
     return managedDelegate_return_s4_arg_s64(i);
 }
@@ -196,12 +195,11 @@ extern "C" double InvokeReturnDouble(int *hr, double d){
             target_class_name.c_str(),
             "ReturnDouble",
             (void**)&managedDelegateReturnDouble);
-    if (hr < 0){
+    if (*hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0.0f;        
     }
-    *hr = 1;
-    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegateReturnDouble created\n", NULL);
+    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegateReturnDouble created hr: 0x%08x\n", *hr);
     return managedDelegateReturnDouble(d);
 }
 
@@ -372,7 +370,7 @@ int main(int argc, char* argv[])
 
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);
-
+    char *leakTest = new char[2000];
     return 0;
 }
 
