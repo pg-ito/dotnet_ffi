@@ -9,12 +9,20 @@ install
 
 * clone the source
 
-  `git@github.com:pg-ito/dotnet_ffi.git && cd dotnet_ffi`
+  ```
+  cd /opt
+  sudo https://github.com/pg-ito/dotnet_ffi.git && cd dotnet_ffi
+  ```
 
 
-* build  
+* build and run
 
   `./br.sh`
+
+
+* run only  
+
+  `./run.sh`
 
 
 * install  
@@ -25,7 +33,9 @@ install
 config
 -------------
 
-modify dotnet_ffi.ini file for your environment.  
+modify dotnet_ffi.ini file for your environment.    
+`sudo vim $(php-config --ini-dir)/dotnet_ffi.ini`
+
 ```
 dotnet_ffi.libcoreclr_file_path=/PATH/TO/PUBLISHED_DOTNET_PROJECT/libcoreclr.so
 dotnet_ffi.target_project_name="DOTNET_PROJECT_NAME, Version=1.0.0.0"
@@ -38,6 +48,7 @@ dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl="return_double_arg_double"
 
 usage in php
 -------------
+
 
 ```
 // invoke Int64 type method sample
@@ -52,6 +63,7 @@ $returnString = DotnetFFI::ret_str_arg_str('1234567890-abcdefghijklmnopqrstuvwxy
 var_dump($returnString);// string(65) "1234567890-ABCDEFGHIJKLMNOPQRSTUVWXYZ,ABCDEFGHIJKLMNOPQRSTUVWXYZ." e.g. toUpper
 
 // c.f. see managed code sample dotnet_dll/invokee_test/InvokeeTest.cs
+// ./ext_test.php
 ```
 
 
@@ -84,3 +96,12 @@ fibonacci sequence:     40      elapsed:        20.0272397995
 
 `benchmarker/run_ab.sh`
 
+FAQ
+-------------
+
+### cannot CoreCLR with apache
+change so/dll file's owner to httpd user  
+e.g.  
+```
+chown -R apache: dotnet_dll/*
+```
