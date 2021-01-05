@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: ce16b4fbf0aba210a673410ad92c7fc42ebd9365 $ */
+/* $Id: 1b1735411147a5a84a4344c3ede584d6c4fffe06 $ */
 
 /* Let there be no top-level code beyond this point:
  * Only functions and classes, thanks!
@@ -521,7 +521,7 @@ NO_PROC_OPEN_ERROR;
                     $html_output = is_resource($html_file);
                     break;
                 case '--version':
-                    echo '$Id: ce16b4fbf0aba210a673410ad92c7fc42ebd9365 $' . "\n";
+                    echo '$Id: 1b1735411147a5a84a4344c3ede584d6c4fffe06 $' . "\n";
                     exit(1);
 
                 default:
@@ -881,7 +881,7 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
         'session' => array('session.auto_start=0'),
         'tidy' => array('tidy.clean_output=0'),
         'zlib' => array('zlib.output_compression=Off'),
-        'xdebug' => array('xdebug.default_enable=0','xdebug.mode=off'),
+        'xdebug' => array('xdebug.default_enable=0'),
         'mbstring' => array('mbstring.func_overload=0'),
     );
 
@@ -1424,8 +1424,7 @@ function run_all_tests_parallel($test_files, $env, $redir_tested) {
                 "TEST_PHP_URI" => $sockUri,
             ],
             [
-                "suppress_errors" => TRUE,
-                'create_new_console' => TRUE,
+                "suppress_errors" => TRUE
             ]
         );
         if ($proc === FALSE) {
@@ -2473,9 +2472,12 @@ COMMAND $cmd
             save_text($test_clean, trim($section_text['CLEAN']), $temp_clean);
 
             if (!$no_clean) {
+                $clean_params = array();
+                settings2array($ini_overwrites, $clean_params);
+                $clean_params = settings2params($clean_params);
                 $extra = substr(PHP_OS, 0, 3) !== "WIN" ?
                     "unset REQUEST_METHOD; unset QUERY_STRING; unset PATH_TRANSLATED; unset SCRIPT_FILENAME; unset REQUEST_METHOD;" : "";
-                system_with_timeout("$extra $php $pass_options $extra_options -q $orig_ini_settings $no_file_cache \"$test_clean\"", $env);
+                system_with_timeout("$extra $php $pass_options $extra_options -q $clean_params $no_file_cache \"$test_clean\"", $env);
             }
 
             if (!$cfg['keep']['clean']) {

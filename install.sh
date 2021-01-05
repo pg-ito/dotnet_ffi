@@ -48,7 +48,7 @@ sudo make install
 
 # sudo cp -ipav ${DOTNET_FFI_INI_FILE} ${PHP_ADDITIONAL_INI_DIR}
 
-INI_VALUES=$(cat <<EOM
+INI_VALUES=$(cat << EOM
 [dotnet_ffi]
 extension=dotnet_ffi.so
 ; dotnet_ffi.libcoreclr_file_path=/PATH/TO/PUBLISHED_DOTNET_PROJECT/libcoreclr.so
@@ -68,7 +68,7 @@ EOM
 echo "${INI_VALUES}"
 
 sudo bash -c "echo '${INI_VALUES}' > ${PHP_ADDITIONAL_INI_DIR}${DOTNET_FFI_INI_FILE}"
-bash -c "echo '${INI_VALUES}' > ${DOTNET_FFI_INI_FILE}
+bash -c "echo '${INI_VALUES}' > ${DOTNET_FFI_INI_FILE}"
 
 echo -e "extension installed. Need reboot your httpd server.\n"
 
