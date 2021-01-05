@@ -4,6 +4,16 @@ dotnet_ffi
 Invoke dotnet core class from php.  
 Approx. 7~10 time faster than pure php7.4.   
 
+requirement
+-------------
+
+* gcc7 or later
+* Ubuntu 18.04 or later, CentOS 7 or later
+* php 7.3 or later
+
+
+
+
 install
 -------------
 
