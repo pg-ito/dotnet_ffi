@@ -3,6 +3,15 @@
 $br = (php_sapi_name() == "cli")? PHP_EOL:'<br />'.PHP_EOL;
 define('LINE_END_CHARS', $br);
 
+if (php_sapi_name() == 'cli') {
+	$loops = isset( $argv[1] )? intval($argv[1]):5;
+}else{
+	$loops = isset($_GET['loops'])? intval($_GET['loops']):5;
+}
+
+
+echo "loops: ${loops}".LINE_END_CHARS;
+
 if(!extension_loaded('dotnet_ffi')) {
 	dl('dotnet_ffi.' . PHP_SHLIB_SUFFIX);
 }
@@ -65,7 +74,7 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retDouble);
 echo "$br\n";
 
-invoke_str_loops(5);
+invoke_str_loops($loops);
 
 echo "--------- END ---------$br\n";
 echo (microtime(true) - $startTime)." [sec.]$br\n";
@@ -76,6 +85,7 @@ function invoke_str_loops(int $loops){
 	$className = 'DotnetFFI';
 	$methodName = 'ret_str_arg_str';
 	for($i=0;$i<$loops;++$i){
+		echo 'loop: '.$i.LINE_END_CHARS;
 		$randomStr = str_repeat(' 1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ._'.bin2hex( random_bytes(random_int(1, 35)) ), random_int(1, 14) );
 		$retString = $className::$methodName($randomStr);
 		echo $className."::{$methodName}() ================".LINE_END_CHARS;
