@@ -21,7 +21,8 @@ install
 
   ```
   cd /opt
-  sudo https://github.com/pg-ito/dotnet_ffi.git && cd dotnet_ffi
+  sudo mkdir dotnet_ffi && sudo chmod 777 dotnet_ffi 
+  cd dotnet_ffi && git clone https://github.com/pg-ito/dotnet_ffi.git .
   ```
 
 
@@ -38,6 +39,17 @@ install
 * install  
 
   `./install.sh`
+
+
+build in docker-compose environment (optional)
+-------------
+
+```
+git clone https://github.com/pg-ito/dotnet_ffi_build.git
+cd dotnet_ffi_build && ./buld.sh
+docker-compose exec php_fpm "/bin/bash"
+# ./br.sh
+```
 
 
 config
