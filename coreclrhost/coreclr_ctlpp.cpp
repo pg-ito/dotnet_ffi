@@ -284,6 +284,7 @@ int main(int argc, char* argv[])
         return 255;
     }
 
+    SetTargtClass("invokee_test, Version=1.0.0.0", "invokee_test.InvokeeTest");
     int hr = -1;
     // ========== coreclr start ==========
    
@@ -292,7 +293,7 @@ int main(int argc, char* argv[])
         printf("initResult failed\n");
         return 255;
     }
-
+/*
     // ========== invoke managed code ==========
     long long retInt64 = 0;
 
@@ -324,8 +325,8 @@ int main(int argc, char* argv[])
     printf("input: n=%lld m=%lld, Managed code returned: %lld, hr: %d\n", n, m, retInt64, hr);
 
     n = distInt(engine);
-
-    printf("\n================= InvokeReturnString test =================\n");
+*/
+/*    printf("\n================= InvokeReturnString test =================\n");
 
     std::string inputStr{"1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ."};
     int strLen = inputStr.length();
@@ -342,7 +343,7 @@ int main(int argc, char* argv[])
     invoke_ret_str_arg_str(&hr, inputStr1.c_str(), inputStr1.length(), &retString1, &strLen1, "return_str_arg_str");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr1.c_str(), retString1, hr);
     free(retString1);
-
+*/
     std::string inputStr2{"hello world"};
     int strLen2 = inputStr2.length();
     char *retString2 = nullptr;
@@ -351,6 +352,7 @@ int main(int argc, char* argv[])
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
     free(retString2);
 
+/*
     printf("\n================= invoke_ret_s64_arg_s64 test =================\n");
 
     for(long long i=0;i<13;++i){
@@ -366,7 +368,7 @@ int main(int argc, char* argv[])
     n = distPositiveInt(engine);
     retInt64 = invoke_ret_s64_arg_s64(&hr, n, "return_s64_arg_s64");
     printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
-
+*/
 
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);
