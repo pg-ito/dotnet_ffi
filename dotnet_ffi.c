@@ -115,16 +115,18 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_s64_s64)
 
 PHP_METHOD(DotnetFFI, ret_str_arg_str)
 {
-	char *arg = NULL;
-	size_t arg_len;
+	char *arg1 = NULL;
+	size_t arg1_len;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg1, &arg1_len) == FAILURE) {
 		return;
 	}
+
 	int hr=-1;
 	char *retString = NULL;
 	int strLen = 0;
-	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
+	invoke_ret_str_arg_str(&hr, arg1, arg1_len, &retString, &strLen,  INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
 		free(retString);
@@ -135,6 +137,36 @@ PHP_METHOD(DotnetFFI, ret_str_arg_str)
 	free(retString);
 	RETURN_STR(result);
 }
+
+PHP_METHOD(DotnetFFI, ret_str_arg_str_multi)
+{
+	char *arg1 = NULL;
+	size_t arg1_len;
+
+	char *methodName = NULL;
+	size_t methodName_len;
+
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &arg1, &arg1_len, &methodName, &methodName_len) == FAILURE) {
+		return;
+	}
+
+
+	int hr=-1;
+	char *retString = NULL;
+	int strLen = 0;
+	invoke_ret_str_arg_str_multi(&hr, arg1, arg1_len, &retString, &strLen, methodName);
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str_multi Fail hr: %d\n",hr);
+		free(retString);
+		return;
+	}
+	
+	zend_string *result = strpprintf(0, "%s", retString);
+	free(retString);
+	RETURN_STR(result);
+}
+
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
    unfold functions in source code. See the corresponding marks just before
@@ -157,6 +189,7 @@ static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_glob
 static const zend_function_entry dotnet_ffi_funcs_entries[] = {
     PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_str_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_str_arg_str_multi, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_s64_arg_s64_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_dbl_arg_dbl, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
     PHP_FE_END

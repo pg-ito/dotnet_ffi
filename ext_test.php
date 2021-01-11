@@ -61,6 +61,35 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
 
+$bas64str = base64_encode("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A");
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName($bas64str, 'return_str_arg_str_base64_dec');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retString);
+echo "$br\n";
+
+
+$bas64str = base64_encode(random_bytes(15));
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName($bas64str, 'return_str_arg_str_base64_dec');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retString);
+echo "$br\n";
+
+
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName('hello world multi.', 'return_str_arg_str');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retString);
+echo "$br\n";
+
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.multi', 'return_str_arg_str');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retString);
+echo "$br\n";
+
+
 
 $methodName = 'ret_s64_arg_s64_s64';
 $retString = $className::$methodName(-100,1024*1024*1024*4);

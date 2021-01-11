@@ -226,12 +226,37 @@ extern "C" void invoke_ret_str_arg_str(int *hr,  const char *inStr, int inLen, c
     *retLen = ret.length()+1;
     *retStr = (char *)malloc((size_t)*retLen);
     memset(*retStr, 0x00, *retLen);
-    strcpy(*retStr, ret.c_str());
-    printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
+    memcpy(*retStr, ret.c_str(), *retLen);
+    DOTNET_FFI_DEBUGLOG("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
     *hr = 1;
     return ;
 }
 
+extern "C" void invoke_ret_str_arg_str_multi(int *hr,  const char *inStr, int inLen, char **retStr, int *retLen, const char* method_name){
+    string_return_string_method_ptr delegate_string_return_string_method{nullptr};
+
+    *hr = createManagedDelegate(
+            hostHandle,
+            domainId,
+            target_project_name.c_str(),
+            target_class_name.c_str(),
+            method_name,
+            (void**)&delegate_string_return_string_method);
+    if (*hr < 0){
+        printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
+        return ;        
+    }
+
+    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegateInvokeReturnString created. hr: 0x%08x\n", *hr);
+    std::string ret = delegate_string_return_string_method(inStr);
+    *retLen = ret.length()+1;
+    *retStr = (char *)malloc((size_t)*retLen);
+    memset(*retStr, 0x00, *retLen);
+    memcpy(*retStr, ret.c_str(), *retLen);
+    DOTNET_FFI_DEBUGLOG("method_name: %s, nativecode ret: %s, retStr: %s, retLen: %d\n", method_name, ret.c_str(), *retStr, *retLen);
+    *hr = 1;
+    return ;
+}
 
 
 // public static long InvokeReturnInt64(long i)

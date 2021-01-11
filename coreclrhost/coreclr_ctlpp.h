@@ -20,6 +20,7 @@ void SetTargtClass(const char* project_name, const char* class_name );
 long long invoke_ret_s64_arg_s64(int *hr, long long i, const char* method_name);
 double InvokeReturnDouble(int *hr, double d);
 void invoke_ret_str_arg_str(int *hr, const char *inStr, int inLen, char **retStr, int *retLen, const char* method_name);
+void invoke_ret_str_arg_str_multi(int *hr, const char *inStr, int inLen, char **retStr, int *retLen, const char* method_name);
 long long InvokeReturnInt64(int *hr, long long i, long long j);
 int DestructVm();
 

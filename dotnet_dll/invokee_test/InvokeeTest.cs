@@ -27,5 +27,11 @@ namespace invokee_test
             Console.WriteLine($"str {str}, ret {ret}");
             return ret;
         }
+        public static string return_str_arg_str_base64_dec(string str){
+            byte[] bin =  Convert.FromBase64String(str);
+            string ret =  BitConverter.ToString( bin ).Replace("-","");
+            Console.WriteLine($"return_str_arg_str_base64_dec: str {str}, ret {ret}");
+            return ret;
+        }
     }
 }
