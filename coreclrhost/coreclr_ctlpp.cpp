@@ -225,6 +225,7 @@ extern "C" void invoke_ret_str_arg_str(int *hr,  const char *inStr, int inLen, c
     std::string ret = managedDelegateInvokeReturnString(inStr);
     *retLen = ret.length()+1;
     *retStr = (char *)malloc((size_t)*retLen);
+    memset(*retStr, 0x00, *retLen);
     strcpy(*retStr, ret.c_str());
     printf("nativecode ret: %s, retStr: %s, retLen: %d\n", ret.c_str(), *retStr, *retLen);
     *hr = 1;

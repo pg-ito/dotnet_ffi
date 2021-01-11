@@ -122,20 +122,18 @@ PHP_METHOD(DotnetFFI, ret_str_arg_str)
 		return;
 	}
 	int hr=-1;
-	char *retString = emalloc(0);
+	char *retString = NULL;
 	int strLen = 0;
 	invoke_ret_str_arg_str(&hr, arg, arg_len, &retString, &strLen, INI_STR("dotnet_ffi.target_method_invoke_ret_str_arg_str"));
 	if(hr < 0){
 		DOTNET_FFI_ERRLOG("invoke_ret_str_arg_str Fail hr: %d\n",hr);
-		efree(retString);
+		free(retString);
 		return;
 	}
 	
 	zend_string *result = strpprintf(0, "%s", retString);
-
+	free(retString);
 	RETURN_STR(result);
-	efree(result);
-	efree(retString);
 }
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
