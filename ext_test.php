@@ -4,9 +4,9 @@ $br = (php_sapi_name() == "cli")? PHP_EOL:'<br />'.PHP_EOL;
 define('LINE_END_CHARS', $br);
 
 if (php_sapi_name() == 'cli') {
-	$loops = isset( $argv[1] )? intval($argv[1]):5;
+	$loops = isset( $argv[1] )? intval($argv[1]):3;
 }else{
-	$loops = isset($_GET['loops'])? intval($_GET['loops']):5;
+	$loops = isset($_GET['loops'])? intval($_GET['loops']):3;
 }
 
 
@@ -49,14 +49,14 @@ echo $className.'::ret_s64_arg_s64() ================'.$br.PHP_EOL;
 var_dump($retInt);
 echo "$br\n";
 
-$methodName = 'ret_str_arg_str';
-$retString = $className::$methodName('hello world.');
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName('H4sIAAAAAAAAA6tWKkktLklJLElUsoo21DHSMdYx0TGN1VHKK81VsrIEglouAB7nkjYkAAAA', 'return_str_arg_str_toupper');
 echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
 
-$methodName = 'ret_str_arg_str';
-$retString = $className::$methodName('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.');
+$methodName = 'ret_str_arg_str_multi';
+$retString = $className::$methodName('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.', 'return_str_arg_str_toupper');
 echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
@@ -70,21 +70,21 @@ echo "$br\n";
 
 
 $bas64str = base64_encode(random_bytes(15));
-$methodName = 'ret_str_arg_str_multi';
-$retString = $className::$methodName($bas64str, 'return_str_arg_str_base64_dec');
+$methodName = 'ret_str_arg_str';
+$retString = $className::$methodName($bas64str);
 echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
 
 
 $methodName = 'ret_str_arg_str_multi';
-$retString = $className::$methodName('hello world multi.', 'return_str_arg_str');
+$retString = $className::$methodName('hello world multi.', 'return_str_arg_str_toupper');
 echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
 
 $methodName = 'ret_str_arg_str_multi';
-$retString = $className::$methodName('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.multi', 'return_str_arg_str');
+$retString = $className::$methodName('1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ.multi', 'return_str_arg_str_toupper');
 echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
@@ -116,7 +116,7 @@ function invoke_str_loops(int $loops){
 	for($i=0;$i<$loops;++$i){
 		echo 'loop: '.$i.LINE_END_CHARS;
 		$randomStr = str_repeat(' 1234567890-abcdefghijklmnopqrstuvwxyz,ABCDEFGHIJKLMNOPQRSTUVWXYZ._'.bin2hex( random_bytes(random_int(1, 35)) ), random_int(1, 14) );
-		$retString = $className::$methodName($randomStr);
+		$retString = $className::$methodName( base64_encode($randomStr) );
 		echo $className."::{$methodName}() ================".LINE_END_CHARS;
 		var_dump($randomStr);
 		var_dump($retString);

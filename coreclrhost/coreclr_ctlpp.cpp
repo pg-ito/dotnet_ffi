@@ -215,7 +215,7 @@ extern "C" void invoke_ret_str_arg_str(int *hr,  const char *inStr, int inLen, c
                 method_name,
                 (void**)&managedDelegateInvokeReturnString);
         if (*hr < 0){
-            printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
+            printf("coreclr_create_delegate failed - status: 0x%08x, method_name: %s\n", *hr, method_name);
             return ;        
         }
     }else{
@@ -243,7 +243,7 @@ extern "C" void invoke_ret_str_arg_str_multi(int *hr,  const char *inStr, int in
             method_name,
             (void**)&delegate_string_return_string_method);
     if (*hr < 0){
-        printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
+        printf("coreclr_create_delegate failed - status: 0x%08x, method_name: %s\n", *hr, method_name);
         return ;        
     }
 

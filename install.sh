@@ -20,7 +20,7 @@ echo ${PHP_INI_FPATH}
 
 # e.g. export PHP_ADDITIONAL_INI_DIR=/etc/php/7.4/apache2/conf.d 
 
-PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-$(php-config --ini-path)}
+PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-$(php-config --ini-dir)}
 PHP_ADDITIONAL_INI_DIR=${PHP_ADDITIONAL_INI_DIR:-/etc/php.d/}
 echo ${PHP_ADDITIONAL_INI_DIR}
 
@@ -58,20 +58,39 @@ dotnet_ffi.target_project_name="invokee_test, Version=1.0.0.0"
 ; dotnet_ffi.target_class_name="INVOKE_TARGET_NAMESPACE.INVOKE_TARGET_CLASS"
 dotnet_ffi.target_class_name="invokee_test.InvokeeTest"
 ; static Class Method names
-dotnet_ffi.target_method_invoke_ret_str_arg_str="return_str_arg_str"
+dotnet_ffi.target_method_invoke_ret_str_arg_str="return_str_arg_str_base64_dec"
 dotnet_ffi.target_method_invoke_ret_s64_arg_s64="return_s64_arg_s64"
 dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl="return_double_arg_double"
 
 EOM
 )
 
-echo "${INI_VALUES}"
+# echo "${INI_VALUES}"
 
-sudo bash -c "echo '${INI_VALUES}' > ${PHP_ADDITIONAL_INI_DIR}${DOTNET_FFI_INI_FILE}"
+
 bash -c "echo '${INI_VALUES}' > ${DOTNET_FFI_INI_FILE}"
+cat ${DOTNET_FFI_INI_FILE}
+# sudo bash -c "echo '${INI_VALUES}' > ${PHP_ADDITIONAL_INI_DIR}/${DOTNET_FFI_INI_FILE}"
+sudo cp -ipav ${DOTNET_FFI_INI_FILE} ${PHP_ADDITIONAL_INI_DIR}/${DOTNET_FFI_INI_FILE}
 
-echo -e "extension installed. Need reboot your httpd server.\n"
 
+
+echo "current extension config in cli"
+php --re dotnet_ffi
+
+
+cat << EOM
+Extension installed. Need reboot your httpd server.
+If extension is not loaded by httpd server, check ini_dir for httpd server and copy inifile manually.
+e.g. sudo cp -ipav dotnet_ffi.ini /etc/php/7.4/fpm/conf.d/dotnet_ffi.ini
+EOM
+
+
+which php-fpm
+if [ $? -eq 0 ];then
+  echo "current extension config in php-fpm"
+  php-fpm -i|grep dotnet_ffi
+fi
 
 cd -
 

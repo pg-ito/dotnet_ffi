@@ -16,22 +16,28 @@ namespace invokee_test
         }
         public static Int64 ReturnInt64(Int64 i, Int64 j){
             Int64 ret = Math.Max(i, j);
-            Console.WriteLine($"i {i}, j {j}, ret {ret}");
+            DotnetLogger($"i {i}, j {j}, ret {ret}");
             return ret;
         }
         public static double ReturnDouble(double d){
             return Math.Sqrt(d);
         }
         public static string return_str_arg_str(string str){
+            return return_str_arg_str_base64_dec(str);
+        }
+        public static string return_str_arg_str_toupper(string str){
             string ret = str.ToUpper();
-            Console.WriteLine($"str {str}, ret {ret}");
+            DotnetLogger($"str {str}, ret {ret}");
             return ret;
         }
         public static string return_str_arg_str_base64_dec(string str){
             byte[] bin =  Convert.FromBase64String(str);
             string ret =  BitConverter.ToString( bin ).Replace("-","");
-            Console.WriteLine($"return_str_arg_str_base64_dec: str {str}, ret {ret}");
+            DotnetLogger($"return_str_arg_str_base64_dec: str {str}, ret {ret}");
             return ret;
+        }
+        private static void DotnetLogger(string str){
+            Console.WriteLine($"[{DateTime.UtcNow}]\tDotnetLog:\t{str}");
         }
     }
 }
