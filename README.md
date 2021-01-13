@@ -88,6 +88,24 @@ var_dump($returnString);// string(65) "1234567890-ABCDEFGHIJKLMNOPQRSTUVWXYZ,ABC
 // ./ext_test.php
 ```
 
+class methods
+-------------
+
+* DotnetFFI::ret_s64_arg_s64(int64 $arg):int64  
+input 1 int64 parameter, return int64.
+
+* DotnetFFI::ret_str_arg_str(string $arg):string  
+input 1 string parameter, return string.
+
+* DotnetFFI::ret_str_arg_str_multi(int64 $arg, string method_name):int64  
+invoke variable method what input 1 string, return string.
+
+* DotnetFFI::ret_s64_arg_s64_s64(int64 $arg):int64  
+input 2 int64 parameters, return int64.
+
+* DotnetFFI::ret_dbl_arg_dbl(int64 $arg):int64  
+input 1 double parameter, return double.
+
 
 
 run fibonacci bench test 
