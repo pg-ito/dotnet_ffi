@@ -22,6 +22,13 @@ namespace invokee_test
         public static double ReturnDouble(double d){
             return Math.Sqrt(d);
         }
+
+        public static Int64 return_s64_arg_str(string str){
+            Int64 ret = (Int64)str.Length;
+            DotnetLogger($"return_s64_arg_str: str {str}, ret {ret.ToString()}");
+            return ret;
+        }
+
         public static string return_str_arg_str(string str){
             return return_str_arg_str_base64_dec(str);
         }

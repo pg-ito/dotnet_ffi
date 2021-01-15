@@ -66,6 +66,7 @@ ZEND_BEGIN_MODULE_GLOBALS(dotnet_ffi)
   char *target_method_invoke_ret_s64_arg_s64_s64;
   char *target_method_invoke_ret_s64_arg_s64_s64_s64;
   char *target_method_invoke_ret_dbl_arg_dbl;
+  char *target_method_invoke_ret_s64_arg_str;
 ZEND_END_MODULE_GLOBALS(dotnet_ffi)
 
 

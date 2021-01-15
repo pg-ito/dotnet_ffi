@@ -103,6 +103,19 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retDouble);
 echo "$br\n";
 
+$methodName = 'ret_s64_arg_str';
+$retInt = $className::$methodName('testJapaneseStringLength');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retInt);
+echo "$br\n";
+
+$methodName = 'ret_s64_arg_str';
+$retInt = $className::$methodName('日本語文字数カウントテスト');
+echo $className."::{$methodName}() ================".$br.PHP_EOL;
+var_dump($retInt);
+echo "$br\n";
+
+
 invoke_str_loops($loops);
 
 echo "--------- END ---------$br\n";

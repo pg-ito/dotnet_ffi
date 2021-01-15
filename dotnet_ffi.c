@@ -59,10 +59,28 @@ PHP_INI_BEGIN()
     STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_str_arg_str",     "InvokeReturnString", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_str_arg_str, zend_dotnet_ffi_globals, dotnet_ffi_globals)
     STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_s64_arg_s64",     "return_s64_arg_s64", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_s64_arg_s64, zend_dotnet_ffi_globals, dotnet_ffi_globals)
     STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl",     "return_double_arg_double", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_dbl_arg_dbl, zend_dotnet_ffi_globals, dotnet_ffi_globals)
+	STD_PHP_INI_ENTRY("dotnet_ffi.target_method_invoke_ret_s64_arg_str",     "return_s64_arg_str", PHP_INI_SYSTEM, OnUpdateString, target_method_invoke_ret_s64_arg_str, zend_dotnet_ffi_globals, dotnet_ffi_globals)
 PHP_INI_END()
 
 
+PHP_METHOD(DotnetFFI, ret_s64_arg_str)
+{
+	char *arg1 = NULL;
+	size_t arg1_len;
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg1, &arg1_len) == FAILURE) {
+		return;
+	}
 
+	int hr=-1;
+	char *retString = NULL;
+	int strLen = 0;
+	zend_long res = invoke_ret_s64_arg_str(&hr, arg1, INI_STR("dotnet_ffi.target_method_invoke_ret_s64_arg_str"));
+	if(hr < 0){
+		DOTNET_FFI_ERRLOG("invoke_ret_s64_arg_str Fail hr: %d\n",hr);
+		return;
+	}
+	RETURN_LONG(res);
+}
 
 PHP_METHOD(DotnetFFI, ret_dbl_arg_dbl)
 {
@@ -192,6 +210,7 @@ static const zend_function_entry dotnet_ffi_funcs_entries[] = {
 	PHP_ME(DotnetFFI, ret_str_arg_str_multi, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_s64_arg_s64_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(DotnetFFI, ret_dbl_arg_dbl, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_s64_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
