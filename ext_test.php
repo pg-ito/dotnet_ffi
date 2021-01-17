@@ -89,7 +89,7 @@ echo $className."::{$methodName}() ================".$br.PHP_EOL;
 var_dump($retString);
 echo "$br\n";
 
-
+invoke_str_loops($loops);
 
 $methodName = 'ret_s64_arg_s64_s64';
 $retString = $className::$methodName(-100,1024*1024*1024*4);
@@ -116,7 +116,7 @@ var_dump($retInt);
 echo "$br\n";
 
 
-invoke_str_loops($loops);
+
 
 echo "--------- END ---------$br\n";
 echo (microtime(true) - $startTime)." [sec.]$br\n";

@@ -24,6 +24,7 @@ namespace invokee_test
         }
 
         public static Int64 return_s64_arg_str(string str){
+            DotnetLogger("return_s64_arg_str: start");
             Int64 ret = (Int64)str.Length;
             DotnetLogger($"return_s64_arg_str: str {str}, ret {ret.ToString()}");
             return ret;
@@ -34,7 +35,7 @@ namespace invokee_test
         }
         public static string return_str_arg_str_toupper(string str){
             string ret = str.ToUpper();
-            DotnetLogger($"str {str}, ret {ret}");
+            DotnetLogger($"return_str_arg_str_toupper: str {str}, ret {ret}");
             return ret;
         }
         public static string return_str_arg_str_base64_dec(string str){

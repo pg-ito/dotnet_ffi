@@ -33,7 +33,7 @@ double_return_docuble_method_ptr managedDelegateReturnDouble{nullptr};
 int64_int64_return_int64_method_ptr managedDelegateInvokeReturnInt64{nullptr};
 return_s64_arg_s64_method_ptr managedDelegate_return_s64_arg_s64{nullptr};
 string_return_string_method_ptr managedDelegateInvokeReturnString{nullptr};
-
+return_s64_arg_str_method_ptr managedDelegate_return_s64_arg_str{nullptr};
 
 void BuildTpaList(const char* directory, const char* extension, std::string& tpaList);
 int ReportProgressCallback(int progress);
@@ -163,10 +163,10 @@ extern "C" void SetTargtClass(const char* project_name, const char* class_name )
 
 // public static Int64 ReturnInt64(Int64 i)
 extern "C" long long  invoke_ret_s64_arg_str(int *hr, const char *inStr, const char* method_name){
-    if(managedDelegate_return_s64_arg_s64 != nullptr){
+    if(managedDelegate_return_s64_arg_str != nullptr){
         *hr = 1;
         DOTNET_FFI_DEBUGLOG("Managed delegate already created. Reuse it.\n", NULL);
-        return managedDelegate_return_s64_arg_s64(*inStr);
+        return managedDelegate_return_s64_arg_str(inStr);
     }
     *hr = createManagedDelegate(
             hostHandle,
@@ -174,13 +174,16 @@ extern "C" long long  invoke_ret_s64_arg_str(int *hr, const char *inStr, const c
             target_project_name.c_str(),
             target_class_name.c_str(),
             method_name,
-            (void**)&managedDelegate_return_s64_arg_s64);
+            (void**)&managedDelegate_return_s64_arg_str);
     if (*hr < 0){
         printf("coreclr_create_delegate failed - status: 0x%08x\n", *hr);
         return 0;        
     }
-    DOTNET_FFI_DEBUGLOG("Managed delegate managedDelegate_return_s64_arg_s64 created hr: 0x%08x\n", *hr);
-    return managedDelegate_return_s64_arg_s64(*inStr);
+    if(managedDelegate_return_s64_arg_str == nullptr){
+        printf("WARNING: coreclr_create_delegate == nullptr - status: 0x%08x\n", *hr);
+        return 0;
+    }
+    return managedDelegate_return_s64_arg_str(inStr);
 }
 
 // public static Int64 ReturnInt64(Int64 i)
@@ -400,6 +403,7 @@ int main(int argc, char* argv[])
     int retLen2 = 0;
     invoke_ret_str_arg_str_multi(&hr, inputStr2.c_str(), inputStr2.length(), &retString2, &strLen2, "return_str_arg_str_toupper");
     printf("input: %s Managed code returned: %s, hr: %d\n", inputStr2.c_str(), retString2, hr);
+
     free(retString2);
 
 /*
@@ -419,9 +423,9 @@ int main(int argc, char* argv[])
     retInt64 = invoke_ret_s64_arg_s64(&hr, n, "return_s64_arg_s64");
     printf("input: n=%lld, Managed code returned: %lld, hr: %d\n", n, retInt64, hr);
 */
-    std::string inputStrForLength{ "TestStringLengthCount"};
+    std::string inputStrForLength{"TestStringLengthCount"};
     retInt64 = invoke_ret_s64_arg_str(&hr,inputStrForLength.c_str(), "return_s64_arg_str");
-    printf("invoke_ret_s64_arg_str() input: %s, Managed code returned: %lld, hr: %d\n", inputStrForLength.c_str(),retInt64, hr);
+    printf("invoke_ret_s64_arg_str() input: %s, Managed code returned: %lld, hr: %d\n", inputStrForLength.c_str(), retInt64, hr);
 
     hr = DestructVm();
     printf("shutdown with hr: %d\n", hr);

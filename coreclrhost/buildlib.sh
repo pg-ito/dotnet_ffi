@@ -21,7 +21,8 @@ DEBUG_APP_CMD="./${LIB_NAME}_app  ../dotnet_dll/publish_invokee_test/libcoreclr.
 echo "debug app compiled. usage: ${DEBUG_APP_CMD}"
 
 if [ "${1}" == "debug" ];then
-  g++  -ggdb -fsanitize=leak -fno-omit-frame-pointer -static-liblsan -static-libgcc ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
+  SANITIZER_OPT="-ggdb -fsanitize=leak -fno-omit-frame-pointer"
+  g++ ${SANITIZER_OPT} -static-liblsan -static-libgcc ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
   ${DEBUG_APP_CMD}
 fi
 
