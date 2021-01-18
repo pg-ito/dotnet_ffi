@@ -10,9 +10,9 @@ LIB_NAME="libcoreclr_ctlpp"
 LIB_DIR="lib"
 g++ ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -c coreclr_ctlpp.cpp -ldl
 ar rcs ${LIB_NAME}.a coreclr_ctlpp.o
-cp -fpav coreclr_ctlpp.h ../${LIB_DIR}
+# cp -fpav coreclr_ctlpp.h ../${LIB_DIR}
 
-g++ ${DEBUG_BUILD_FLAG} -O2 --shared -fPIC -std=gnu++1y -o ${LIB_NAME}.so coreclr_ctlpp.cpp -ldl
+# g++ ${DEBUG_BUILD_FLAG} -O2 --shared -fPIC -std=gnu++1y -o ${LIB_NAME}.so coreclr_ctlpp.cpp -ldl
 
 # cp -fpav ${LIB_NAME}.* ../${LIB_DIR}
 # ls -alG
@@ -21,8 +21,8 @@ DEBUG_APP_CMD="./${LIB_NAME}_app  ../dotnet_dll/publish_invokee_test/libcoreclr.
 echo "debug app compiled. usage: ${DEBUG_APP_CMD}"
 
 if [ "${1}" == "debug" ];then
-  SANITIZER_OPT="-ggdb -fsanitize=leak -fno-omit-frame-pointer"
-  g++ ${SANITIZER_OPT} -static-liblsan -static-libgcc ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
+  SANITIZER_OPT="-ggdb -fsanitize=leak -fno-omit-frame-pointer -static-liblsan -static-libgcc"
+  g++ ${SANITIZER_OPT}  ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -o ${LIB_NAME}_app coreclr_ctlpp.cpp -ldl
   ${DEBUG_APP_CMD}
 fi
 

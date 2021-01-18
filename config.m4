@@ -114,9 +114,14 @@ if test "$PHP_DOTNET_FFI" != "no"; then
 
   AC_MSG_CHECKING(phplibdir $DOTNET_FFI_DIR/$PHP_LIBDIR)
 
-  PHP_ADD_LIBRARY_WITH_PATH("coreclr_ctlpp", $DOTNET_FFI_DIR/coreclrhost, DOTNET_FFI_SHARED_LIBADD)
-  PHP_SUBST(DOTNET_FFI_SHARED_LIBADD)
+  dnl PHP_ADD_LIBRARY_WITH_PATH("coreclr_ctlpp", $DOTNET_FFI_DIR/coreclrhost, DOTNET_FFI_SHARED_LIBADD)
+  dnl PHP_SUBST(DOTNET_FFI_SHARED_LIBADD)
 
+  dnl static link coreclrhost/libcoreclr_ctlpp.a
+  PHP_ADD_LIBRARY_WITH_PATH("coreclr_ctlpp", $DOTNET_FFI_DIR/coreclrhost, EXTRA_LDFLAGS)
+
+  echo -e "\ncflags $CFLAGS"
+  echo "cxxflags $CXXFLAGS"
   dnl In case of no dependencies
   AC_DEFINE(HAVE_DOTNET_FFI, 1, [ Have dotnet_ffi support ])
 
