@@ -65,6 +65,7 @@ dotnet_ffi.target_class_name="INVOKE_TARGET_NAMESPACE.INVOKE_TARGET_CLASS"
 dotnet_ffi.target_method_invoke_ret_str_arg_str="return_str_arg_str"
 dotnet_ffi.target_method_invoke_ret_s64_arg_s64="return_s64_arg_s64"
 dotnet_ffi.target_method_invoke_ret_dbl_arg_dbl="return_double_arg_double"
+dotnet_ffi.target_method_invoke_ret_s64_arg_str="return_s64_arg_str"
 ```
 
 
