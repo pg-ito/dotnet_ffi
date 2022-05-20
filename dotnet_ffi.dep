@@ -1,0 +1,65 @@
+dotnet_ffi.lo: /var/www/dotnet_ffi.c /var/www/config.h \
+ /usr/include/php/main/php.h /usr/include/php/main/php_version.h \
+ /usr/include/php/Zend/zend.h /usr/include/php/Zend/zend_types.h \
+ /usr/include/php/Zend/zend_portability.h \
+ /usr/include/php/Zend/zend_config.h \
+ /usr/include/php/main/../main/php_config.h \
+ /usr/include/php/Zend/../TSRM/TSRM.h /usr/include/php/main/php_config.h \
+ /usr/include/php/main/php_stdint.h \
+ /usr/include/php/Zend/zend_range_check.h \
+ /usr/include/php/Zend/zend_long.h /usr/include/php/Zend/zend_map_ptr.h \
+ /usr/include/php/Zend/zend_errors.h /usr/include/php/Zend/zend_alloc.h \
+ /usr/include/php/Zend/zend.h /usr/include/php/Zend/zend_alloc_sizes.h \
+ /usr/include/php/Zend/zend_llist.h /usr/include/php/Zend/zend_string.h \
+ /usr/include/php/Zend/zend_hash.h /usr/include/php/Zend/zend_ast.h \
+ /usr/include/php/Zend/zend_gc.h /usr/include/php/Zend/zend_variables.h \
+ /usr/include/php/Zend/zend_iterators.h \
+ /usr/include/php/Zend/zend_stream.h \
+ /usr/include/php/Zend/zend_smart_str_public.h \
+ /usr/include/php/Zend/zend_smart_string_public.h \
+ /usr/include/php/Zend/zend_signal.h \
+ /usr/include/php/Zend/zend_object_handlers.h \
+ /usr/include/php/Zend/zend_operators.h \
+ /usr/include/php/Zend/zend_strtod.h \
+ /usr/include/php/Zend/zend_multiply.h /usr/include/php/Zend/zend_sort.h \
+ /usr/include/php/main/php_compat.h /usr/include/php/main/php_config.h \
+ /usr/include/php/Zend/zend_API.h /usr/include/php/Zend/zend_modules.h \
+ /usr/include/php/Zend/zend_compile.h \
+ /usr/include/php/Zend/zend_globals.h \
+ /usr/include/php/Zend/zend_globals_macros.h \
+ /usr/include/php/Zend/zend_stack.h \
+ /usr/include/php/Zend/zend_ptr_stack.h \
+ /usr/include/php/Zend/zend_objects.h \
+ /usr/include/php/Zend/zend_objects_API.h \
+ /usr/include/php/Zend/zend_float.h \
+ /usr/include/php/Zend/zend_multibyte.h \
+ /usr/include/php/Zend/zend_arena.h \
+ /usr/include/php/Zend/zend_vm_opcodes.h \
+ /usr/include/php/Zend/zend_build.h /usr/include/php/Zend/zend_list.h \
+ /usr/include/php/Zend/zend_execute.h \
+ /usr/include/php/Zend/zend_type_info.h \
+ /usr/include/php/main/build-defs.h /usr/include/php/main/php_stdint.h \
+ /usr/include/php/Zend/zend_hash.h /usr/include/php/Zend/zend_alloc.h \
+ /usr/include/php/Zend/zend_stack.h /usr/include/php/main/snprintf.h \
+ /usr/include/php/main/spprintf.h \
+ /usr/include/php/Zend/zend_smart_str_public.h \
+ /usr/include/php/Zend/zend_smart_string_public.h \
+ /usr/include/php/main/php_syslog.h /usr/include/php/main/php.h \
+ /usr/include/php/main/php_output.h /usr/include/php/main/php_streams.h \
+ /usr/include/php/Zend/zend_stream.h \
+ /usr/include/php/main/streams/php_stream_context.h \
+ /usr/include/php/main/streams/php_stream_filter_api.h \
+ /usr/include/php/main/streams/php_stream_transport.h \
+ /usr/include/php/main/streams/php_stream_plain_wrapper.h \
+ /usr/include/php/main/streams/php_stream_glob_wrapper.h \
+ /usr/include/php/main/streams/php_stream_userspace.h \
+ /usr/include/php/main/streams/php_stream_mmap.h \
+ /usr/include/php/main/php_memory_streams.h \
+ /usr/include/php/main/fopen_wrappers.h \
+ /usr/include/php/main/php_globals.h /usr/include/php/Zend/zend_globals.h \
+ /usr/include/php/main/php_ini.h /usr/include/php/Zend/zend_ini.h \
+ /usr/include/php/Zend/zend_virtual_cwd.h /usr/include/php/TSRM/TSRM.h \
+ /usr/include/php/Zend/zend_constants.h \
+ /usr/include/php/main/php_reentrancy.h /usr/include/php/main/php_ini.h \
+ /usr/include/php/ext/standard/info.h /var/www/php_dotnet_ffi.h \
+ /var/www/lib/coreclr_ctlpp.h

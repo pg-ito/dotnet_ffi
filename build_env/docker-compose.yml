@@ -17,3 +17,4 @@ services:
     build: php_8_1
     volumes:
       - ../:/var/www/
+      

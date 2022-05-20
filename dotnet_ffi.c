@@ -63,6 +63,9 @@ PHP_INI_BEGIN()
 PHP_INI_END()
 
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_s64_arg_str, 0, 2, IS_LONG, 0)
+    ZEND_ARG_INFO(0, string_arg1)
+ZEND_END_ARG_INFO()
 PHP_METHOD(DotnetFFI, ret_s64_arg_str)
 {
 	char *arg1 = NULL;
@@ -82,6 +85,9 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_str)
 	RETURN_LONG(res);
 }
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_dbl_arg_dbl, 0, 1, IS_DOUBLE, 0)
+    ZEND_ARG_INFO(0, double_arg1)
+ZEND_END_ARG_INFO()
 PHP_METHOD(DotnetFFI, ret_dbl_arg_dbl)
 {
 	double arg;
@@ -98,7 +104,9 @@ PHP_METHOD(DotnetFFI, ret_dbl_arg_dbl)
 }
 
 
-
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_s64_arg_s64, 0, 1, IS_LONG, 0)
+    ZEND_ARG_INFO(0, long_arg1)
+ZEND_END_ARG_INFO()
 PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
 {
 	zend_long arg;
@@ -113,7 +121,13 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_s64)
 	}
 	RETURN_LONG(res);
 }
-
+/*
+#define ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
+*/
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_s64_arg_s64_s64, 0, 2, IS_LONG, 0)
+    ZEND_ARG_INFO(0, long_arg1)
+    ZEND_ARG_INFO(0, long_arg2)
+ZEND_END_ARG_INFO()
 
 PHP_METHOD(DotnetFFI, ret_s64_arg_s64_s64)
 {
@@ -131,6 +145,9 @@ PHP_METHOD(DotnetFFI, ret_s64_arg_s64_s64)
 	RETURN_LONG(result);
 }
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_str_arg_str, 0, 2, IS_STRING, 0)
+    ZEND_ARG_INFO(0, string_arg1)
+ZEND_END_ARG_INFO()
 PHP_METHOD(DotnetFFI, ret_str_arg_str)
 {
 	char *arg1 = NULL;
@@ -156,6 +173,10 @@ PHP_METHOD(DotnetFFI, ret_str_arg_str)
 	RETURN_STR(result);
 }
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ret_str_arg_str_multi, 0, 2, IS_STRING, 0)
+    ZEND_ARG_INFO(0, string_arg1)
+	ZEND_ARG_INFO(0, string_arg2)
+ZEND_END_ARG_INFO()
 PHP_METHOD(DotnetFFI, ret_str_arg_str_multi)
 {
 	char *arg1 = NULL;
@@ -205,12 +226,12 @@ static void php_dotnet_ffi_init_globals(zend_dotnet_ffi_globals *dotnet_ffi_glob
 }
 
 static const zend_function_entry dotnet_ffi_funcs_entries[] = {
-    PHP_ME(DotnetFFI, ret_s64_arg_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(DotnetFFI, ret_str_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(DotnetFFI, ret_str_arg_str_multi, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(DotnetFFI, ret_s64_arg_s64_s64, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(DotnetFFI, ret_dbl_arg_dbl, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(DotnetFFI, ret_s64_arg_str, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+    PHP_ME(DotnetFFI, ret_s64_arg_s64, arginfo_ret_s64_arg_s64, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_str_arg_str, arginfo_ret_str_arg_str, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_str_arg_str_multi, arginfo_ret_str_arg_str_multi, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_s64_arg_s64_s64, arginfo_ret_s64_arg_s64_s64, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_dbl_arg_dbl, arginfo_ret_dbl_arg_dbl, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(DotnetFFI, ret_s64_arg_str, arginfo_ret_s64_arg_str, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
