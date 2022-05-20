@@ -10,11 +10,11 @@ LIB_NAME="libcoreclr_ctlpp"
 LIB_DIR="lib"
 g++ ${DEBUG_BUILD_FLAG} -O2 -fPIC -std=gnu++1y -c coreclr_ctlpp.cpp -ldl
 ar rcs ${LIB_NAME}.a coreclr_ctlpp.o
-# cp -fpav coreclr_ctlpp.h ../${LIB_DIR}
+ cp -fpav coreclr_ctlpp.h ../${LIB_DIR}
 
 # g++ ${DEBUG_BUILD_FLAG} -O2 --shared -fPIC -std=gnu++1y -o ${LIB_NAME}.so coreclr_ctlpp.cpp -ldl
 
-# cp -fpav ${LIB_NAME}.* ../${LIB_DIR}
+cp -fpav ${LIB_NAME}.* ../${LIB_DIR}
 # ls -alG
 # nm ${LIB_NAME}*
 DEBUG_APP_CMD="./${LIB_NAME}_app  ../dotnet_dll/publish_invokee_test/libcoreclr.so"
